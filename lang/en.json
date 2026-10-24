@@ -63,7 +63,8 @@
       "remove": "Remove from the album",
       "removeConfirm": "Take this photo out of the album? The image file stays in the world folder.",
       "playerHint": "Your current view goes to the GM, who puts it into the album.",
-      "send": "Send"
+      "send": "Send",
+      "settings": "Settings"
     },
     "Card": {
       "speaker": "Campaign Album",

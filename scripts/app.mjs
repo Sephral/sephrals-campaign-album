@@ -6,7 +6,7 @@
 
 const {ApplicationV2, HandlebarsApplicationMixin, DialogV2} = foundry.applications.api;
 
-import {MODULE_ID, TEMPLATES, esc, setting, t} from "./config.mjs";
+import {MODULE_ID, TEMPLATES, addSettingsGear, esc, setting, t} from "./config.mjs";
 import {albumJournal, allPhotos, nextIsNewSession, photoMeta, photosOf, removePhoto, sessionPages,
   setCaption, startNewSession} from "./album.mjs";
 import {photoByGM, submitOwnPhoto} from "./photographer.mjs";
@@ -150,6 +150,13 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
         slideshow: !!this.#slideshow};
     }
     return context;
+  }
+
+  /** @override */
+  async _renderFrame(options) {
+    const frame = await super._renderFrame(options);
+    addSettingsGear(frame);
+    return frame;
   }
 
   /** @override */

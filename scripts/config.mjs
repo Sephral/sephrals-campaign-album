@@ -61,3 +61,42 @@ export function generation() {
 export function flag(doc, key) {
   return foundry.utils.getProperty(doc, `flags.${MODULE_ID}.${key}`);
 }
+
+/**
+ * Open Foundry's settings on the tab of this module.
+ */
+export async function openSettings() {
+  const sheet = game.settings.sheet;
+  await sheet.render({force: true});
+  try {
+    sheet.changeTab(MODULE_ID, "categories");
+  } catch(err) {
+    console.warn(`${MODULE_ID} | The settings have no tab for this module`, err);
+  }
+  sheet.bringToFront?.();
+}
+
+/**
+ * Put a gear into the title bar of a window that opens the settings of this module. Players only get it when the
+ * module has settings for them.
+ * @param {HTMLElement} frame   The window frame
+ */
+export function addSettingsGear(frame) {
+  const header = frame?.querySelector(".window-header");
+  if ( !header || header.querySelector(".sca-settings") ) return;
+  const own = setting => (setting.namespace === MODULE_ID) && setting.config && (setting.scope !== "world");
+  if ( !game.user.isGM && ![...game.settings.settings.values()].some(own) ) return;
+  const gear = document.createElement("button");
+  gear.type = "button";
+  gear.className = "header-control icon fa-solid fa-gear sca-settings";
+  gear.dataset.tooltip = t("SCA.Album.settings");
+  gear.setAttribute("aria-label", t("SCA.Album.settings"));
+  gear.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    openSettings();
+  });
+  const anchor = header.querySelector("[data-action=toggleControls]") ?? header.querySelector("[data-action=close]");
+  if ( anchor ) anchor.before(gear);
+  else header.append(gear);
+}

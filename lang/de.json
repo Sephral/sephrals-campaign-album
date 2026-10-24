@@ -63,7 +63,8 @@
       "remove": "Aus dem Album nehmen",
       "removeConfirm": "Dieses Foto aus dem Album nehmen? Die Bilddatei bleibt im Weltordner.",
       "playerHint": "Deine aktuelle Ansicht geht an die Spielleitung, die sie ins Album legt.",
-      "send": "Senden"
+      "send": "Senden",
+      "settings": "Einstellungen"
     },
     "Card": {
       "speaker": "Kampagnen-Album",
