@@ -1,0 +1,200 @@
+{
+  "SCA": {
+    "Title": "Campaign Album",
+    "NotReady": "The album is not set up yet. It sets itself up as soon as a GM is online.",
+    "NoGM": "No GM is online. Photos need a GM, you can still look through the album.",
+    "LANGUAGE": {
+      "default": "Follow Foundry",
+      "de": "Deutsch",
+      "en": "English"
+    },
+    "Storage": {
+      "journalName": "Campaign Album"
+    },
+    "Session": {
+      "title": "Session {number}, {date}",
+      "intro": "Kept by the Campaign Album. The photos show the moments as the players saw them.",
+      "empty": "No photos in this session yet."
+    },
+    "Photo": {
+      "seenBy": "seen by {name}"
+    },
+    "Kind": {
+      "crit": "Critical hit",
+      "fumble": "Fumble",
+      "boss": "A boss falls",
+      "victory": "Victory",
+      "death": "Farewell",
+      "levelUp": "Level up",
+      "dawn": "Sunrise",
+      "manual": "Photo",
+      "player": "Photo"
+    },
+    "Caption": {
+      "crit": "{name} lands a critical hit",
+      "critTarget": "{name} lands a critical hit on {target}",
+      "fumble": "{name} fumbles",
+      "fumbleTarget": "{name} fumbles against {target}",
+      "boss": "{name} falls",
+      "victory": "Victory!",
+      "death": "Farewell, {name}",
+      "levelUp": "{name} reaches level {level}",
+      "dawn": "A new day dawns"
+    },
+    "Album": {
+      "session": "Session",
+      "allSessions": "All sessions",
+      "count": "{count} photos",
+      "slideshow": "Slideshow",
+      "takePhoto": "Take a photo",
+      "newSession": "New session",
+      "newSessionHint": "The next photo starts a new page in the album.",
+      "nextNewSession": "The next photo starts a new session.",
+      "openJournal": "Open as journal",
+      "empty": "No photos yet. Critical hits, fallen bosses, victories and level ups land here on their own.",
+      "position": "{index} of {count}",
+      "prev": "Previous photo",
+      "next": "Next photo",
+      "close": "Close",
+      "stop": "Stop",
+      "caption": "Caption",
+      "editCaption": "Edit caption",
+      "save": "Save",
+      "remove": "Remove from the album",
+      "removeConfirm": "Take this photo out of the album? The image file stays in the world folder.",
+      "playerHint": "Your current view goes to the GM, who puts it into the album.",
+      "send": "Send"
+    },
+    "Card": {
+      "speaker": "Campaign Album",
+      "title": "A new photo in the album",
+      "open": "Open the album",
+      "approval": "{name} took a photo for the album:",
+      "approve": "Add",
+      "decline": "Decline"
+    },
+    "Notice": {
+      "sent": "Photo sent to the GM.",
+      "added": "Your photo is in the album.",
+      "waiting": "Your photo waits for the GM.",
+      "approved": "The GM put your photo into the album.",
+      "declined": "The GM did not take your photo into the album.",
+      "asked": "The active GM takes the photo.",
+      "taken": "Photo taken.",
+      "newSession": "The next photo starts a new session."
+    },
+    "Skip": {
+      "off": "Automatic photos are off.",
+      "limit": "The limit of automatic photos for this session is reached.",
+      "cooldown": "The last automatic photo was taken a moment ago."
+    },
+    "Error": {
+      "noCanvas": "There is no scene to take a photo of.",
+      "offscreen": "That part of the scene is not on the screen.",
+      "capture": "The photo could not be taken.",
+      "timeout": "The player's client did not answer in time.",
+      "notActiveGM": "Only the active GM takes photos.",
+      "noGM": "No GM is online.",
+      "playerPhotosOff": "Players cannot take photos in this world.",
+      "otherScene": "The active GM looks at another scene.",
+      "upload": "The image could not be stored. The active GM needs the permission to upload files.",
+      "noAlbum": "The album does not exist yet.",
+      "photoGone": "That photo is no longer in the album.",
+      "write": "The album could not be changed. See the console for details."
+    },
+    "SETTINGS": {
+      "uiLanguage": {
+        "name": "Module language",
+        "hint": "Language of the album for you. Follow Foundry uses Foundry's language."
+      },
+      "autoPhotos": {
+        "name": "Automatic photos",
+        "hint": "The album captures great moments on its own. The moments are chosen below."
+      },
+      "triggerCrit": {
+        "name": "Critical hits",
+        "hint": "A photo of a critical hit (D&D 5e: attack rolls, Crucible: critical successes, other systems: a natural 20)."
+      },
+      "triggerFumble": {
+        "name": "Fumbles",
+        "hint": "A photo of a fumble, the funny memories."
+      },
+      "triggerBoss": {
+        "name": "Fallen bosses",
+        "hint": "A photo when a boss falls (D&D 5e: creatures with legendary actions or resistances, Crucible: adversaries of the boss rank)."
+      },
+      "triggerVictory": {
+        "name": "Victories",
+        "hint": "A photo when the last enemy of a fight falls."
+      },
+      "triggerDeath": {
+        "name": "Farewells",
+        "hint": "A photo when a player character dies."
+      },
+      "triggerLevelUp": {
+        "name": "Level ups",
+        "hint": "A photo when a character reaches a new level (D&D 5e and Crucible)."
+      },
+      "triggerDawn": {
+        "name": "Sunrise",
+        "hint": "A photo when the sun rises on a new day (calendars with a sun, such as the ones of D&D 5e and Ember). It shows the heroes on the current scene."
+      },
+      "critsBy": {
+        "name": "Whose critical hits",
+        "hint": "Only those of the player characters, or of everyone in the fight.",
+        "players": "Player characters",
+        "all": "Everyone"
+      },
+      "maxAuto": {
+        "name": "Automatic photos per session",
+        "hint": "At most this many automatic photos per session, so every photo stays special. 0 means no limit."
+      },
+      "cooldown": {
+        "name": "Pause between automatic photos",
+        "hint": "Seconds after an automatic photo before the next one."
+      },
+      "perspective": {
+        "name": "Through whose eyes",
+        "hint": "Photos show what a player of a character in the picture saw, with their light, vision and fog. If no such player is online, another player's or the GM's view is used. The GM's view never shows hidden tokens.",
+        "players": "Through the players' eyes",
+        "gm": "Always the GM's view"
+      },
+      "playerPhotos": {
+        "name": "Photos by players",
+        "hint": "Players can send a photo of their view with the camera button.",
+        "off": "Off",
+        "approve": "The GM decides",
+        "direct": "Straight into the album"
+      },
+      "chatCards": {
+        "name": "Chat messages",
+        "hint": "A chat message with every new photo.",
+        "all": "For everyone",
+        "gm": "Only for the GM",
+        "off": "None"
+      },
+      "sessionGap": {
+        "name": "New session after",
+        "hint": "Hours without a photo after which the next photo starts a new session. The GM can also start one in the album."
+      }
+    },
+    "SELFTEST": {
+      "Title": "Campaign Album self test",
+      "Run": "Run self test",
+      "Hint": "Checks the album, the image folder and taking photos. Run it after an update of Foundry or the system.",
+      "Passed": "Self test passed: {checks} checks, system support {system}.",
+      "Problems": "Self test: {problems} of {checks} checks failed. See the chat message.",
+      "Version": "{id} {current} (verified {tested})",
+      "NewVersions": "The Campaign Album was verified with older versions than {versions}. Run the self test in the module settings to check that everything still works.",
+      "NoJournal": "The album journal is missing.",
+      "JournalOwnership": "Players cannot see the album. Give everyone at least observer rights.",
+      "JournalOwner": "Players own the album journal and could change it. Observer rights are enough.",
+      "Upload": "The active GM may not upload files, so photos cannot be stored. Allow uploads for the role in the user permissions.",
+      "Folder": "The image folder {folder} could not be created.",
+      "Capture": "This client could not take a photo of the scene.",
+      "Socket": "The module socket is missing.",
+      "Generic": "{system} has no built in support. Critical hits count as a natural 20, bosses and levels are not recognized.",
+      "NoCharacters": "No player characters were found."
+    }
+  }
+}

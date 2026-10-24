@@ -1,0 +1,69 @@
+<div class="sca-body">
+  {{#unless ready}}
+  <p class="sca-empty">{{localize "SCA.NotReady"}}</p>
+  {{else}}
+
+  <header class="sca-toolbar">
+    <select name="session" aria-label="{{localize "SCA.Album.session"}}">
+      {{#each options}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+    </select>
+    <span class="sca-count">{{localize "SCA.Album.count" count=count}}</span>
+    <span class="sca-spacer"></span>
+    <button type="button" data-action="slideshow"><i class="fa-solid fa-play" inert></i> {{localize "SCA.Album.slideshow"}}</button>
+    {{#if canTake}}<button type="button" data-action="photo"><i class="fa-solid fa-camera" inert></i> {{localize "SCA.Album.takePhoto"}}</button>{{/if}}
+    {{#if isGM}}<button type="button" data-action="newSession" data-tooltip="{{localize "SCA.Album.newSessionHint"}}"><i class="fa-solid fa-book-open" inert></i> {{localize "SCA.Album.newSession"}}</button>{{/if}}
+    <button type="button" class="sca-icon" data-action="openJournal" data-tooltip="{{localize "SCA.Album.openJournal"}}"><i class="fa-solid fa-book" inert></i></button>
+  </header>
+
+  {{#if noGM}}<p class="sca-warning"><i class="fa-solid fa-triangle-exclamation" inert></i> {{localize "SCA.NoGM"}}</p>{{/if}}
+  {{#if newNext}}<p class="sca-note"><i class="fa-solid fa-circle-info" inert></i> {{localize "SCA.Album.nextNewSession"}}</p>{{/if}}
+
+  <div class="sca-scroll">
+    {{#each sessions}}
+    <section class="sca-session" data-page-id="{{id}}">
+      <h2>{{title}}</h2>
+      {{#if photos.length}}
+      <ol class="sca-grid plain">
+        {{#each photos}}
+        <li class="sca-thumb" data-page-id="{{pageId}}" data-photo-id="{{id}}">
+          <button type="button" class="sca-thumb-image" data-action="view" aria-label="{{label}}"><img src="{{src}}" alt="" loading="lazy"></button>
+          <div class="sca-thumb-text">
+            <span class="sca-thumb-caption">{{label}}</span>
+            <small>{{meta}}</small>
+          </div>
+        </li>
+        {{/each}}
+      </ol>
+      {{else}}
+      <p class="sca-empty">{{localize "SCA.Session.empty"}}</p>
+      {{/if}}
+    </section>
+    {{else}}
+    <p class="sca-empty">{{localize "SCA.Album.empty"}}</p>
+    {{/each}}
+  </div>
+
+  {{#if viewer}}
+  <div class="sca-viewer" tabindex="-1" data-page-id="{{viewer.pageId}}" data-photo-id="{{viewer.id}}">
+    <div class="sca-viewer-image">
+      <button type="button" class="sca-nav prev" data-action="prev" {{#unless viewer.hasPrev}}disabled{{/unless}} aria-label="{{localize "SCA.Album.prev"}}"><i class="fa-solid fa-chevron-left" inert></i></button>
+      <img src="{{viewer.src}}" alt="{{viewer.caption}}">
+      <button type="button" class="sca-nav next" data-action="next" {{#unless viewer.hasNext}}disabled{{/unless}} aria-label="{{localize "SCA.Album.next"}}"><i class="fa-solid fa-chevron-right" inert></i></button>
+    </div>
+    <footer class="sca-viewer-text">
+      <div>
+        <strong class="sca-viewer-caption">{{#if viewer.caption}}{{viewer.caption}}{{else}}{{viewer.kindLabel}}{{/if}}</strong>
+        <small>{{viewer.session}} · {{viewer.meta}}</small>
+      </div>
+      <span class="sca-spacer"></span>
+      <small class="sca-position">{{viewer.position}}</small>
+      {{#if isGM}}
+      <button type="button" class="sca-icon" data-action="caption" data-tooltip="{{localize "SCA.Album.editCaption"}}"><i class="fa-solid fa-pen" inert></i></button>
+      <button type="button" class="sca-icon" data-action="remove" data-tooltip="{{localize "SCA.Album.remove"}}"><i class="fa-solid fa-trash" inert></i></button>
+      {{/if}}
+      <button type="button" data-action="closeViewer">{{#if viewer.slideshow}}<i class="fa-solid fa-stop" inert></i> {{localize "SCA.Album.stop"}}{{else}}<i class="fa-solid fa-xmark" inert></i> {{localize "SCA.Album.close"}}{{/if}}</button>
+    </footer>
+  </div>
+  {{/if}}
+  {{/unless}}
+</div>

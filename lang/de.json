@@ -1,0 +1,200 @@
+{
+  "SCA": {
+    "Title": "Kampagnen-Album",
+    "NotReady": "Das Album ist noch nicht eingerichtet. Es richtet sich ein, sobald eine Spielleitung online ist.",
+    "NoGM": "Keine Spielleitung online. Fotos brauchen eine Spielleitung, durchblättern geht trotzdem.",
+    "LANGUAGE": {
+      "default": "Wie Foundry",
+      "de": "Deutsch",
+      "en": "English"
+    },
+    "Storage": {
+      "journalName": "Kampagnen-Album"
+    },
+    "Session": {
+      "title": "Sitzung {number}, {date}",
+      "intro": "Geführt vom Kampagnen-Album. Die Fotos zeigen die Momente so, wie die Spieler sie gesehen haben.",
+      "empty": "In dieser Sitzung gibt es noch keine Fotos."
+    },
+    "Photo": {
+      "seenBy": "gesehen von {name}"
+    },
+    "Kind": {
+      "crit": "Kritischer Treffer",
+      "fumble": "Patzer",
+      "boss": "Ein Boss fällt",
+      "victory": "Sieg",
+      "death": "Abschied",
+      "levelUp": "Stufenaufstieg",
+      "dawn": "Sonnenaufgang",
+      "manual": "Foto",
+      "player": "Foto"
+    },
+    "Caption": {
+      "crit": "{name} landet einen kritischen Treffer",
+      "critTarget": "{name} landet einen kritischen Treffer gegen {target}",
+      "fumble": "{name} patzt",
+      "fumbleTarget": "{name} patzt gegen {target}",
+      "boss": "{name} fällt",
+      "victory": "Sieg!",
+      "death": "Lebe wohl, {name}",
+      "levelUp": "{name} erreicht Stufe {level}",
+      "dawn": "Ein neuer Tag bricht an"
+    },
+    "Album": {
+      "session": "Sitzung",
+      "allSessions": "Alle Sitzungen",
+      "count": "{count} Fotos",
+      "slideshow": "Diashow",
+      "takePhoto": "Foto machen",
+      "newSession": "Neue Sitzung",
+      "newSessionHint": "Das nächste Foto beginnt eine neue Seite im Album.",
+      "nextNewSession": "Das nächste Foto beginnt eine neue Sitzung.",
+      "openJournal": "Als Journal öffnen",
+      "empty": "Noch keine Fotos. Kritische Treffer, gefallene Bosse, Siege und Stufenaufstiege landen hier von selbst.",
+      "position": "{index} von {count}",
+      "prev": "Vorheriges Foto",
+      "next": "Nächstes Foto",
+      "close": "Schließen",
+      "stop": "Anhalten",
+      "caption": "Bildunterschrift",
+      "editCaption": "Bildunterschrift ändern",
+      "save": "Speichern",
+      "remove": "Aus dem Album nehmen",
+      "removeConfirm": "Dieses Foto aus dem Album nehmen? Die Bilddatei bleibt im Weltordner.",
+      "playerHint": "Deine aktuelle Ansicht geht an die Spielleitung, die sie ins Album legt.",
+      "send": "Senden"
+    },
+    "Card": {
+      "speaker": "Kampagnen-Album",
+      "title": "Ein neues Foto im Album",
+      "open": "Album öffnen",
+      "approval": "{name} hat ein Foto für das Album gemacht:",
+      "approve": "Aufnehmen",
+      "decline": "Ablehnen"
+    },
+    "Notice": {
+      "sent": "Foto an die Spielleitung geschickt.",
+      "added": "Dein Foto ist im Album.",
+      "waiting": "Dein Foto wartet auf die Spielleitung.",
+      "approved": "Die Spielleitung hat dein Foto ins Album gelegt.",
+      "declined": "Die Spielleitung hat dein Foto nicht ins Album aufgenommen.",
+      "asked": "Die aktive Spielleitung macht das Foto.",
+      "taken": "Foto gemacht.",
+      "newSession": "Das nächste Foto beginnt eine neue Sitzung."
+    },
+    "Skip": {
+      "off": "Automatische Fotos sind aus.",
+      "limit": "Die Grenze automatischer Fotos für diese Sitzung ist erreicht.",
+      "cooldown": "Das letzte automatische Foto ist gerade erst entstanden."
+    },
+    "Error": {
+      "noCanvas": "Es gibt keine Szene, die man fotografieren könnte.",
+      "offscreen": "Dieser Teil der Szene ist nicht auf dem Bildschirm.",
+      "capture": "Das Foto konnte nicht gemacht werden.",
+      "timeout": "Der Client des Spielers hat nicht rechtzeitig geantwortet.",
+      "notActiveGM": "Nur die aktive Spielleitung macht Fotos.",
+      "noGM": "Keine Spielleitung online.",
+      "playerPhotosOff": "In dieser Welt können Spieler keine Fotos machen.",
+      "otherScene": "Die aktive Spielleitung schaut auf eine andere Szene.",
+      "upload": "Das Bild konnte nicht gespeichert werden. Die aktive Spielleitung braucht die Berechtigung, Dateien hochzuladen.",
+      "noAlbum": "Das Album gibt es noch nicht.",
+      "photoGone": "Dieses Foto ist nicht mehr im Album.",
+      "write": "Das Album konnte nicht geändert werden. Details stehen in der Konsole."
+    },
+    "SETTINGS": {
+      "uiLanguage": {
+        "name": "Modulsprache",
+        "hint": "Sprache des Albums für dich. Wie Foundry nutzt die Sprache von Foundry."
+      },
+      "autoPhotos": {
+        "name": "Automatische Fotos",
+        "hint": "Das Album hält große Momente von selbst fest. Welche, steht darunter."
+      },
+      "triggerCrit": {
+        "name": "Kritische Treffer",
+        "hint": "Ein Foto bei einem kritischen Treffer (D&D 5e: Angriffswürfe, Crucible: kritische Erfolge, andere Systeme: eine natürliche 20)."
+      },
+      "triggerFumble": {
+        "name": "Patzer",
+        "hint": "Ein Foto bei einem Patzer, für die lustigen Erinnerungen."
+      },
+      "triggerBoss": {
+        "name": "Gefallene Bosse",
+        "hint": "Ein Foto, wenn ein Boss fällt (D&D 5e: Kreaturen mit legendären Aktionen oder Resistenzen, Crucible: Gegner vom Rang Boss)."
+      },
+      "triggerVictory": {
+        "name": "Siege",
+        "hint": "Ein Foto, wenn der letzte Gegner eines Kampfs fällt."
+      },
+      "triggerDeath": {
+        "name": "Abschiede",
+        "hint": "Ein Foto, wenn ein Spielercharakter stirbt."
+      },
+      "triggerLevelUp": {
+        "name": "Stufenaufstiege",
+        "hint": "Ein Foto, wenn ein Charakter eine neue Stufe erreicht (D&D 5e und Crucible)."
+      },
+      "triggerDawn": {
+        "name": "Sonnenaufgang",
+        "hint": "Ein Foto, wenn die Sonne über einem neuen Tag aufgeht (Kalender mit Sonne, etwa die von D&D 5e und Ember). Es zeigt die Helden auf der aktuellen Szene."
+      },
+      "critsBy": {
+        "name": "Wessen kritische Treffer",
+        "hint": "Nur die der Spielercharaktere oder die aller im Kampf.",
+        "players": "Spielercharaktere",
+        "all": "Alle"
+      },
+      "maxAuto": {
+        "name": "Automatische Fotos pro Sitzung",
+        "hint": "Höchstens so viele automatische Fotos pro Sitzung, damit jedes Foto besonders bleibt. 0 heißt ohne Grenze."
+      },
+      "cooldown": {
+        "name": "Pause zwischen automatischen Fotos",
+        "hint": "Sekunden nach einem automatischen Foto, bevor das nächste entsteht."
+      },
+      "perspective": {
+        "name": "Durch wessen Augen",
+        "hint": "Fotos zeigen, was ein Spieler eines Charakters im Bild gesehen hat, mit seinem Licht, seiner Sicht und seinem Nebel. Ist kein solcher Spieler online, wird die Ansicht eines anderen Spielers oder der Spielleitung genommen. Die Ansicht der Spielleitung zeigt nie versteckte Tokens.",
+        "players": "Durch die Augen der Spieler",
+        "gm": "Immer die Ansicht der Spielleitung"
+      },
+      "playerPhotos": {
+        "name": "Fotos von Spielern",
+        "hint": "Spieler können mit dem Kamera-Knopf ein Foto ihrer Ansicht schicken.",
+        "off": "Aus",
+        "approve": "Die Spielleitung entscheidet",
+        "direct": "Direkt ins Album"
+      },
+      "chatCards": {
+        "name": "Chatnachrichten",
+        "hint": "Eine Chatnachricht zu jedem neuen Foto.",
+        "all": "Für alle",
+        "gm": "Nur für die Spielleitung",
+        "off": "Keine"
+      },
+      "sessionGap": {
+        "name": "Neue Sitzung nach",
+        "hint": "Stunden ohne Foto, nach denen das nächste Foto eine neue Sitzung beginnt. Die Spielleitung kann im Album auch selbst eine beginnen."
+      }
+    },
+    "SELFTEST": {
+      "Title": "Selbsttest Kampagnen-Album",
+      "Run": "Selbsttest starten",
+      "Hint": "Prüft das Album, den Bildordner und das Fotografieren. Nach einem Update von Foundry oder dem System ausführen.",
+      "Passed": "Selbsttest bestanden: {checks} Prüfungen, Systemunterstützung {system}.",
+      "Problems": "Selbsttest: {problems} von {checks} Prüfungen fehlgeschlagen. Details in der Chatnachricht.",
+      "Version": "{id} {current} (geprüft {tested})",
+      "NewVersions": "Das Kampagnen-Album wurde mit älteren Versionen als {versions} geprüft. Starte den Selbsttest in den Moduleinstellungen, um zu prüfen, ob alles noch funktioniert.",
+      "NoJournal": "Das Album-Journal fehlt.",
+      "JournalOwnership": "Spieler können das Album nicht sehen. Gib allen mindestens Beobachterrechte.",
+      "JournalOwner": "Spieler besitzen das Album-Journal und könnten es ändern. Beobachterrechte reichen.",
+      "Upload": "Die aktive Spielleitung darf keine Dateien hochladen, Fotos können nicht gespeichert werden. Erlaube das Hochladen für die Rolle in den Benutzerberechtigungen.",
+      "Folder": "Der Bildordner {folder} konnte nicht angelegt werden.",
+      "Capture": "Dieser Client konnte kein Foto der Szene machen.",
+      "Socket": "Der Socket des Moduls fehlt.",
+      "Generic": "{system} wird nicht direkt unterstützt. Kritische Treffer zählen als natürliche 20, Bosse und Stufen werden nicht erkannt.",
+      "NoCharacters": "Es wurden keine Spielercharaktere gefunden."
+    }
+  }
+}
