@@ -8,12 +8,17 @@ import {noticeNewVersions, runSelfTest} from "./selftest.mjs";
 import {registerSettings} from "./settings.mjs";
 import {system} from "./systems.mjs";
 import {registerTriggers, rememberState} from "./triggers.mjs";
+import {registerUsage} from "./usage.mjs";
 
 /** The names of the tools in the token controls. */
 const TOOLS = {album: "sca-album", photo: "sca-photo"};
 
 Hooks.once("init", () => {
   registerSettings();
+  registerUsage(MODULE_ID, {
+    features: ["autoPhoto", "manualPhoto", "playerPhoto", "slideshow", "newSession", "captionEdit", "photoRemove"],
+    settings: ["autoPhotos", "perspective", "playerPhotos"]
+  });
   registerTriggers();
 
   Hooks.on("getSceneControlButtons", onGetSceneControlButtons);

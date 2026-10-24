@@ -10,6 +10,7 @@ import {MODULE_ID, TEMPLATES, addSettingsGear, esc, setting, t} from "./config.m
 import {albumJournal, allPhotos, nextIsNewSession, photoMeta, photosOf, removePhoto, sessionPages,
   setCaption, startNewSession} from "./album.mjs";
 import {photoByGM, submitOwnPhoto} from "./photographer.mjs";
+import {countFeature, markUsed} from "./usage.mjs";
 
 /** Seconds per photo in the slideshow. */
 const SLIDE_SECONDS = 5;
@@ -28,6 +29,7 @@ export async function openAlbum({photoId}={}) {
   }
   await app.render({force: true});
   app.bringToFront?.();
+  markUsed(MODULE_ID);
   return app;
 }
 
@@ -263,6 +265,7 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
       if ( !this.rendered ) return this.#stopSlideshow();
       this.#step(1);
     }, SLIDE_SECONDS * 1000);
+    countFeature(MODULE_ID, "slideshow");
     this.render();
   }
 
@@ -275,6 +278,7 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onNewSession() {
     if ( !game.user.isGM ) return;
     await startNewSession();
+    countFeature(MODULE_ID, "newSession");
     ui.notifications.info(t("SCA.Notice.newSession"));
     this.render();
   }
@@ -301,6 +305,7 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
       ok: {label: t("SCA.Album.save"), callback: (event, button) => button.form.elements.caption.value}
     });
     if ( caption === null || caption === undefined ) return;
+    countFeature(MODULE_ID, "captionEdit");
     await GMWrite(() => setCaption(pageId, photoId, caption));
   }
 
@@ -313,6 +318,7 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
     if ( !ok ) return;
     this.#step(1);
     if ( this.viewing === photoId ) this.viewing = null;
+    countFeature(MODULE_ID, "photoRemove");
     await GMWrite(() => removePhoto(pageId, photoId));
   }
 }

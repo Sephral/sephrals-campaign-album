@@ -10,6 +10,7 @@ import {capture, visibleFrame} from "./capture.mjs";
 import {photoFrame} from "./frame.mjs";
 import {onGMMessage, onMessageFromGM, requestCapture, send} from "./net.mjs";
 import {autoAllowed, photographers} from "./rules.mjs";
+import {countFeature} from "./usage.mjs";
 
 /**
  * @typedef PhotoRequest
@@ -110,6 +111,7 @@ export async function takePhoto(request) {
       caption: request.caption ?? "", actors, by: request.by?.name ?? game.user.name,
       seenBy: seenBy?.isGM ? "" : (seenBy?.name ?? ""), sceneName: scene.navName || scene.name, auto: !!request.auto});
     await postCard(photo);
+    countFeature(MODULE_ID, request.auto ? "autoPhoto" : "manualPhoto");
     return {ok: true, photo, seenBy: seenBy?.name};
   } catch(err) {
     const key = String(err?.message ?? "");
@@ -163,6 +165,7 @@ async function onSubmit(payload, sender) {
   const answer = (key, data) => send({type: "submitted", key, data}, [sender.id]);
   if ( sender.isGM ) return;
   if ( (mode === "off") || !String(payload.image ?? "").startsWith("data:image/") ) return answer("SCA.Error.playerPhotosOff");
+  countFeature(MODULE_ID, "playerPhoto");
   const scene = game.scenes.get(payload.sceneId);
   const data = {image: payload.image, width: Number(payload.width) || 0, height: Number(payload.height) || 0,
     kind: "player", caption: String(payload.caption ?? "").slice(0, 300),
