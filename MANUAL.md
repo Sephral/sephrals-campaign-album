@@ -61,6 +61,19 @@ All options are in *Game Settings → Configure Settings → Sephral’s Campaig
 | New session after | Hours without a photo after which the next photo starts a new session |
 | Self test | Checks the album, the image folder and taking photos (GM) |
 
+## Usage statistics
+
+The module can take part in a small usage report shared by all of Sephral’s modules. Nothing is counted or sent until the GM agrees: shortly after the world starts, the active GM is asked, and the question comes back at every start until there is an answer. The answer counts for all of Sephral’s modules in the world. *Share usage statistics* in the module settings turns the report on or off at any time, and *Manage statistics* below it shows what the report contains right now.
+
+With the GM’s consent only the active GM’s browser counts, and it sends at most one report a day. The question lists everything the report contains, from the Foundry version to a random world ID. For the Campaign Album it holds:
+
+* on how many of the last 30 days the module was used
+* how often photos are taken automatically or by hand, players send in photos, the slideshow runs, a new session page starts, captions are edited and photos are removed
+* the settings *Automatic photos*, *Through whose eyes* and *Photos by players* (only the chosen option)
+* where errors occur in the module code: file, line and error type, never the error message
+
+No names, chat messages, notes, dice results or other content of the world are sent.
+
 ## Storage
 
 * The album is the journal *Campaign Album*. Everyone may read it, only the GM changes it. Each session page keeps its photos in the page's flags and shows them as figures in its text.
