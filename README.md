@@ -2,6 +2,7 @@
 
 **The critical hit that ended the dragon. The last stand at the bridge. The night the bard reached level five. Campaign Album keeps those moments as photos, exactly as your players saw them, and fills a scrapbook of your campaign session by session.**
 
+[![Foundry VTT package](https://img.shields.io/badge/Foundry%20VTT-Package%20page-fe6a1f?logo=foundryvirtualtabletop&logoColor=white)](https://foundryvtt.com/packages/sephrals-campaign-album)
 [![Join Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/7BjCgDYaBP)
 [![More modules by Sephral](https://img.shields.io/badge/GitHub-More%20modules%20by%20Sephral-181717?logo=github&logoColor=white)](https://github.com/Sephral)
 
@@ -31,7 +32,7 @@ A GM has to be online for photos to be stored. The photos are images in your wor
 
 ## Install
 
-Use the manifest URL `https://github.com/Sephral/sephrals-campaign-album/releases/latest/download/module.json` in Foundry's module installer.
+Search for **Campaign Album** in Foundry's module browser or open the [package page](https://foundryvtt.com/packages/sephrals-campaign-album).
 
 Foundry VTT 13 and 14 · any game system, built in support for Crucible and D&D 5e · English and German
 
