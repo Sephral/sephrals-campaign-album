@@ -196,6 +196,13 @@
       "Socket": "The module socket is missing.",
       "Generic": "{system} has no built in support. Critical hits count as a natural 20, bosses and levels are not recognized.",
       "NoCharacters": "No player characters were found."
+    },
+    "DEBUG": {
+      "Title": "Debug file",
+      "Save": "Save debug file",
+      "Hint": "Saves one file for bug reports about all of Sephral’s modules in this world: versions, settings and what the modules recorded, such as the latest chat messages they read. It contains chat text and whispers, check it before you share it.",
+      "Entry": "Save Debug File (Sephral’s Modules)",
+      "Saved": "Debug file {file} saved. It contains chat text and whispers, check it before you share it."
     }
   }
 }

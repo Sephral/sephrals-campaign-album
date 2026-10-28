@@ -62,7 +62,9 @@ test("defaults: crits, bosses, victories, farewells and level ups on, fumbles of
   assert.equal(settings.get("playerPhotos").default, "approve");
 });
 
-test("the self test is a GM only menu", () => {
+test("the self test and the debug file are GM only menus", () => {
   const {menus} = register();
   assert.equal(menus.get("selfTest").restricted, true);
+  assert.equal(menus.get("debugFile").restricted, true);
+  assert.equal(menus.get("debugFile").label, "SCA.DEBUG.Save");
 });

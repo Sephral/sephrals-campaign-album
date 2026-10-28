@@ -2,7 +2,7 @@
   "id": "sephrals-campaign-album",
   "title": "Sephral’s Campaign Album",
   "description": "A photo album for your campaign. Critical hits, fallen bosses, victories, farewells and level ups are captured on their own, exactly as the players saw them, and collected session by session in a journal everyone can browse.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "compatibility": {
     "minimum": 13,
     "verified": "14.369"

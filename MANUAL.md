@@ -60,6 +60,18 @@ All options are in *Game Settings → Configure Settings → Sephral’s Campaig
 | Chat messages | A message with every new photo for everyone, only for the GM, or none |
 | New session after | Hours without a photo after which the next photo starts a new session |
 | Self test | Checks the album, the image folder and taking photos (GM) |
+| Debug file | Saves a file for bug reports (GM), see below |
+
+## Debug file
+
+When an automatic photo is missing or comes at the wrong moment, a debug file shows what the album saw. It is one file for all of Sephral’s modules in the world, and the GM saves it in two places:
+
+* *Save debug file* in the module settings: the latest 20 messages with rolls and every recent decision of the automatic photos.
+* *Save Debug File (Sephral’s Modules)* in the context menu of a chat message: that one message.
+
+The file holds the Foundry, system and module versions, the active modules, the settings of the modules, the chat messages with their rolls, for each message the crit or fumble the album found and the check that stopped the photo (no actor, not a player character, no token, moment switched off and so on), the result of each automatic photo since the last reload (limit, pause or a missing view) and the state of the album: journal, number of photos, the current session and whether the limit or the pause applies right now.
+
+The file contains chat text and whispers. Check it before you share it.
 
 ## Usage statistics
 
@@ -93,6 +105,7 @@ No names, chat messages, notes, dice results or other content of the world are s
 | `journal()` | The album journal |
 | `system()` | The rules of the running game system |
 | `runSelfTest()` | Runs the self test (GM) |
+| `saveDebugFile(messageId)` | Saves a debug file about one chat message, or without an id about the latest roll messages (GM) |
 
 ## Limits
 

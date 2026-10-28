@@ -1,6 +1,8 @@
 import {MODULE_ID, flag, setting, t} from "./config.mjs";
 import {albumJournal, allPhotos, ensureAlbum, isAlbumPage} from "./album.mjs";
 import {openAlbum, refreshAlbum, takePhotoAsUser} from "./app.mjs";
+import {registerDebug} from "./debug.mjs";
+import {saveDebugFile} from "./debug-file.mjs";
 import {applyModuleLanguage} from "./language.mjs";
 import {registerSocket} from "./net.mjs";
 import {answerSubmission, registerPhotographer, takePhoto} from "./photographer.mjs";
@@ -20,6 +22,7 @@ Hooks.once("init", () => {
     settings: ["autoPhotos", "perspective", "playerPhotos"]
   });
   registerTriggers();
+  registerDebug();
 
   Hooks.on("getSceneControlButtons", onGetSceneControlButtons);
   Hooks.on("renderJournalDirectory", onRenderJournalDirectory);
@@ -42,7 +45,9 @@ Hooks.once("init", () => {
     /** The rules of the running system. */
     system,
     /** Check the album, the image folder and taking photos (GM). */
-    runSelfTest
+    runSelfTest,
+    /** Save the debug file of Sephral's modules (GM): about one chat message, or without an id the latest picture. */
+    saveDebugFile: messageId => saveDebugFile(messageId ?? null, {moduleId: MODULE_ID})
   };
 });
 

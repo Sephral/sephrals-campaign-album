@@ -196,6 +196,13 @@
       "Socket": "Der Socket des Moduls fehlt.",
       "Generic": "{system} wird nicht direkt unterstützt. Kritische Treffer zählen als natürliche 20, Bosse und Stufen werden nicht erkannt.",
       "NoCharacters": "Es wurden keine Spielercharaktere gefunden."
+    },
+    "DEBUG": {
+      "Title": "Debug-Datei",
+      "Save": "Debug-Datei speichern",
+      "Hint": "Speichert eine Datei für Fehlerberichte über alle Module von Sephral in dieser Welt: Versionen, Einstellungen und was die Module aufgezeichnet haben, etwa die letzten Chatnachrichten, die sie gelesen haben. Sie enthält Chattext und Flüsternachrichten, prüfe sie vor dem Teilen.",
+      "Entry": "Debug-Datei speichern (Sephral’s Module)",
+      "Saved": "Debug-Datei {file} gespeichert. Sie enthält Chattext und Flüsternachrichten, prüfe sie vor dem Teilen."
     }
   }
 }

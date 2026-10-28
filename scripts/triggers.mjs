@@ -6,9 +6,13 @@
  */
 
 import {setting, t} from "./config.mjs";
+import {DebugTrace} from "./debug-file.mjs";
 import {takePhoto} from "./photographer.mjs";
 import {sunrisesBetween} from "./rules.mjs";
 import {messageRolls, system} from "./systems.mjs";
+
+/** Why automatic photos were taken or not, for debug files. Entries about a chat message carry its id. */
+export const photoTrace = new DebugTrace();
 
 /** Dead or defeated state of actors as last seen, by combat and actor (see stateKey). */
 const deadState = new Map();
@@ -83,12 +87,16 @@ function wanted(kind) {
 }
 
 /**
- * Take an automatic photo and log why it did not happen.
+ * Take an automatic photo, note the result in the trace and log why it did not happen.
  * @param {object} request
+ * @param {string} [messageId]   The chat message the photo is about
  * @returns {Promise<object>}
  */
-async function auto(request) {
+async function auto(request, messageId) {
   const result = await takePhoto({...request, auto: true});
+  photoTrace.add("photo", {kind: request.kind, messageId, ok: !!result.ok, error: result.error ?? null,
+    photoId: result.photo?.id ?? null, seenBy: result.seenBy ?? null,
+    tokens: (request.tokens ?? []).map(token => (token?.document ?? token)?.uuid ?? null)});
   if ( !result.ok ) console.debug(`sephrals-campaign-album | No ${request.kind} photo: ${result.error}`);
   return result;
 }
@@ -98,22 +106,66 @@ async function auto(request) {
 /* -------------------------------------------- */
 
 /**
+ * @typedef RollAssessment
+ * @property {"crit"|"fumble"|null} kind
+ * @property {string|null} reason     Why there is no photo: notActiveGM, alreadyTaken, noRolls, noCritOrFumble,
+ *                                    notWanted, noActor, notCharacter or noToken. Null when the photo is due.
+ * @property {boolean} wanted         The kind passed the settings, the message counts as handled
+ * @property {Scene|null} scene
+ * @property {Actor|null} actor
+ * @property {TokenDocument|null} token
+ */
+
+/**
+ * Does a chat message call for a crit or fumble photo? The checks of the hook, without side effects, so the debug
+ * file can tell the same story.
+ * @param {ChatMessage} message
+ * @param {object} [options]
+ * @param {boolean} [options.ignoreHandled]   Check a message again whose photo was already handled (debug file)
+ * @returns {RollAssessment}
+ */
+export function assessRoll(message, {ignoreHandled=false}={}) {
+  const assessment = {kind: null, reason: null, wanted: false, scene: null, actor: null, token: null};
+  const stop = reason => Object.assign(assessment, {reason});
+  if ( !game.user.isActiveGM ) return stop("notActiveGM");
+  if ( !ignoreHandled && rolledMessages.has(message.id) ) return stop("alreadyTaken");
+  if ( !messageRolls(message).length ) return stop("noRolls");
+  assessment.kind = system().rollEvent(message);
+  if ( !assessment.kind ) return stop("noCritOrFumble");
+  if ( !wanted(assessment.kind) ) return stop("notWanted");
+  assessment.wanted = true;
+  const scene = assessment.scene = game.scenes.get(message.speaker?.scene) ?? playScene();
+  const speakerToken = scene?.tokens.get(message.speaker?.token) ?? null;
+  const actor = assessment.actor = speakerToken?.actor ?? game.actors.get(message.speaker?.actor) ?? null;
+  if ( !actor ) return stop("noActor");
+  if ( (setting("critsBy") === "players") && !system().isCharacter(actor) ) return stop("notCharacter");
+  assessment.token = speakerToken ?? tokensOf(scene, [actor])[0] ?? null;
+  if ( !assessment.token ) return stop("noToken");
+  return assessment;
+}
+
+/**
+ * Was the crit or fumble photo of a message already handled?
+ * @param {string} messageId
+ * @returns {boolean}
+ */
+export function wasHandled(messageId) {
+  return rolledMessages.has(messageId);
+}
+
+/**
  * Hook "createChatMessage".
  * @param {ChatMessage} message
  */
 async function onCreateChatMessage(message) {
-  if ( !game.user.isActiveGM || rolledMessages.has(message.id) || !messageRolls(message).length ) return;
-  const kind = system().rollEvent(message);
-  if ( !kind || !wanted(kind) ) return;
-  rolledMessages.add(message.id);
-  const scene = game.scenes.get(message.speaker?.scene) ?? playScene();
-  const speakerToken = scene?.tokens.get(message.speaker?.token);
-  const actor = speakerToken?.actor ?? game.actors.get(message.speaker?.actor);
-  if ( !actor ) return;
-  if ( (setting("critsBy") === "players") && !system().isCharacter(actor) ) return;
+  const {kind, reason, wanted: claimed, scene, actor, token} = assessRoll(message);
+  if ( claimed ) rolledMessages.add(message.id);
+  // Other clients and messages without rolls would only push the useful entries out of the trace
+  if ( !["notActiveGM", "noRolls"].includes(reason) ) {
+    photoTrace.add("roll", {messageId: message.id, kind, reason, actor: actor?.uuid ?? null, token: token?.uuid ?? null});
+  }
+  if ( reason ) return;
   await afterDice(message);
-  const token = speakerToken ?? tokensOf(scene, [actor])[0];
-  if ( !token ) return;
   const targets = [];
   for ( const uuid of system().targetUuids(message) ) {
     const doc = await fromUuid(uuid).catch(() => null);
@@ -123,7 +175,8 @@ async function onCreateChatMessage(message) {
   const name = token.name;
   const target = targets[0]?.name;
   const caption = target ? t(`SCA.Caption.${kind}Target`, {name, target}) : t(`SCA.Caption.${kind}`, {name});
-  await auto({kind, tokens: [token, ...targets], caption, actors: [...new Set([name, ...targets.map(x => x.name)])]});
+  await auto({kind, tokens: [token, ...targets], caption, actors: [...new Set([name, ...targets.map(x => x.name)])]},
+    message.id);
 }
 
 /**
