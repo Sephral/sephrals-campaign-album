@@ -9,10 +9,21 @@
   },
   "authors": [
     {
-      "name": "Sephral"
+      "name": "Sephral",
+      "url": "https://github.com/Sephral"
     }
   ],
   "url": "https://github.com/Sephral/sephrals-campaign-album.git",
+  "relationships": {
+    "recommends": [
+      {
+        "id": "sephrals-combat-log-stats",
+        "type": "module",
+        "manifest": "https://github.com/Sephral/sephrals-combat-log-stats/releases/latest/download/module.json",
+        "reason": "Adds the combat totals of each game night to its session page: fights, damage, healing, defeated foes and the hero of the night."
+      }
+    ]
+  },
   "esmodules": [
     "scripts/sca.mjs"
   ],

@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {KINDS, TRIGGERS, autoAllowed, naturalD20, needsNewSession, pageHtml, photoFileName, photographers,
-  sunrisesBetween}
+import {readFile} from "node:fs/promises";
+import {KINDS, TRIGGERS, autoAllowed, combatHtml, combatLines, combatSnapshot, naturalD20, nearSpan, needsNewSession,
+  pageHtml, photoFileName, photographers, sunrisesBetween, withCombatSection}
   from "../scripts/rules.mjs";
 
 const HOUR = 3600 * 1000;
@@ -90,4 +91,103 @@ test("sunrisesBetween counts the sunrises a change of the world time passed", ()
   assert.equal(sunrisesBetween(0, DAY, 0, at), 0);
   // Any sunrise serves as the reference, also one far in the future
   assert.equal(sunrisesBetween(5 * 3600, 7 * 3600, DAY, at + (400 * DAY)), 1);
+});
+
+/* -------------------------------------------- */
+/*  Combat totals                               */
+/* -------------------------------------------- */
+
+const lang = {
+  en: JSON.parse(await readFile(new URL("../lang/en.json", import.meta.url), "utf8")),
+  de: JSON.parse(await readFile(new URL("../lang/de.json", import.meta.url), "utf8"))
+};
+
+/**
+ * The formatters of a page in one language, as album.mjs builds them.
+ * @param {"en"|"de"} code
+ */
+function formatIn(code) {
+  const t = (key, data={}) => {
+    const text = key.split(".").reduce((o, k) => o?.[k], lang[code]) ?? key;
+    return Object.entries(data).reduce((s, [k, v]) => s.replaceAll(`{${k}}`, v), text);
+  };
+  return {t, num: value => new Intl.NumberFormat(code).format(value),
+    join: names => new Intl.ListFormat(code, {type: "conjunction"}).format(names)};
+}
+
+/** Totals as the API of Combat Log & Stats returns them. */
+const TOTALS = {
+  sessionIds: ["session-a"], startedAt: "2026-10-24T19:00:00.000Z", endedAt: "2026-10-24T23:00:00.000Z",
+  systemId: "dnd5e", fights: 3, rounds: 14, durationMs: 3_000_000, damage: 1312, healing: 85, moraleDamage: 0,
+  enemyDamage: null, enemiesDefeated: 11, partyDowned: 2, criticalHits: 4,
+  members: [{name: "Aria", damage: 900}, {name: "Bram", damage: 412}],
+  awards: [{key: "healer", names: ["Bram"], value: 85}, {key: "mvp", label: "MVP", names: ["Aria", "Bram"], value: 900}]
+};
+
+test("a page keeps only the totals it shows, and nothing without a fight", () => {
+  assert.deepEqual(combatSnapshot(TOTALS), {fights: 3, rounds: 14, damage: 1312, healing: 85, moraleDamage: 0,
+    enemiesDefeated: 11, partyDowned: 2, criticalHits: 4, mvp: {names: ["Aria", "Bram"], value: 900}});
+  assert.equal(combatSnapshot(null), null);
+  assert.equal(combatSnapshot({...TOTALS, fights: 0}), null);
+  assert.equal(combatSnapshot({...TOTALS, awards: []}).mvp, null);
+  assert.equal(combatSnapshot({fights: 1}).damage, 0);
+});
+
+test("the combat totals read like a short story of the night, in English and German", () => {
+  const combat = combatSnapshot(TOTALS);
+  assert.deepEqual(combatLines(combat, formatIn("en")), [
+    "3 fights in 14 rounds.",
+    "The heroes dealt 1,312 damage and 85 healing.",
+    "11 foes defeated.",
+    "Heroes went down 2 times.",
+    "The heroes landed 4 critical hits.",
+    "Hero of the night: Aria and Bram with 900 damage and healing."
+  ]);
+  assert.deepEqual(combatLines(combat, formatIn("de")), [
+    "3 Kämpfe in 14 Runden.",
+    "Die Helden teilten 1.312 Schaden und 85 Heilung aus.",
+    "11 Gegner besiegt.",
+    "Helden gingen 2 Mal zu Boden.",
+    "Die Helden landeten 4 kritische Treffer.",
+    "Held des Abends: Aria und Bram mit 900 Schaden und Heilung."
+  ]);
+  // One of each, Crucible morale, nothing that did not happen
+  const single = {fights: 1, rounds: 1, damage: 0, healing: 6, moraleDamage: 4, enemiesDefeated: 1, partyDowned: 1,
+    criticalHits: 1, mvp: null};
+  assert.deepEqual(combatLines(single, formatIn("en")), ["1 fight in 1 round.", "The heroes dealt 6 healing.",
+    "The heroes dealt 4 morale damage.", "1 foe defeated.", "A hero went down once.", "The heroes landed 1 critical hit."]);
+  assert.deepEqual(combatLines({...single, healing: 0, moraleDamage: 0, enemiesDefeated: 0, partyDowned: 0,
+    criticalHits: 0}, formatIn("en")), ["1 fight in 1 round."]);
+  assert.deepEqual(combatLines(null, formatIn("en")), []);
+});
+
+test("the combat section is escaped, sits after the photos and replaces itself without touching the rest", () => {
+  const section = combatHtml("Battles <of> the night", ["Hero of the night: <b>Aria</b> & Bram."]);
+  assert.equal(section, "<section class=\"sca-combat\"><h3>Battles &lt;of&gt; the night</h3>"
+    + "<ul><li>Hero of the night: &lt;b&gt;Aria&lt;/b&gt; &amp; Bram.</li></ul></section>");
+  assert.equal(combatHtml("Title", []), "");
+
+  const photo = {id: "a1", src: "x.webp", caption: "Boom", width: 10, height: 10};
+  const page = pageHtml([photo], {intro: "Intro", meta: () => "", empty: "none", combat: section});
+  assert.ok(page.endsWith(section));
+  assert.ok(page.indexOf("sca-page") < page.indexOf("sca-combat"));
+  assert.ok(!pageHtml([photo], {intro: "Intro", meta: () => "", empty: "none"}).includes("sca-combat"));
+
+  // The GM wrote a note into the page: refreshing the totals keeps it
+  const edited = `${pageHtml([photo], {intro: "Intro", meta: () => "", empty: "none"})}<p>Our notes $& more</p>`;
+  const added = withCombatSection(edited, section);
+  assert.equal(added, `${edited}${section}`);
+  const newer = combatHtml("Battles", ["4 fights in 20 rounds."]);
+  assert.equal(withCombatSection(added, newer), `${edited}${newer}`);
+  assert.equal(withCombatSection(added, ""), edited);
+  assert.equal(withCombatSection(edited, ""), edited);
+  assert.equal(withCombatSection(null, ""), "");
+});
+
+test("a fight belongs to the pages whose photos lie less than the margin away", () => {
+  const span = {from: Date.UTC(2026, 9, 24, 19), to: Date.UTC(2026, 9, 24, 23)};
+  assert.equal(nearSpan(span, Date.UTC(2026, 9, 24, 20), 12 * HOUR), true);
+  assert.equal(nearSpan(span, Date.UTC(2026, 9, 24, 10), 12 * HOUR), true);
+  assert.equal(nearSpan(span, Date.UTC(2026, 9, 25, 12), 12 * HOUR), false);
+  assert.equal(nearSpan(span, NaN, 12 * HOUR), false);
 });

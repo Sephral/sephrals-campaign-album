@@ -84,6 +84,26 @@
       "taken": "Foto gemacht.",
       "newSession": "Das nächste Foto beginnt eine neue Sitzung."
     },
+    "Combat": {
+      "title": "Die Kämpfe des Abends",
+      "overview": "{fights} in {rounds}.",
+      "fightsOne": "1 Kampf",
+      "fightsOther": "{count} Kämpfe",
+      "roundsOne": "1 Runde",
+      "roundsOther": "{count} Runden",
+      "damage": "Die Helden teilten {damage} Schaden aus.",
+      "damageHealing": "Die Helden teilten {damage} Schaden und {healing} Heilung aus.",
+      "healing": "Die Helden teilten {healing} Heilung aus.",
+      "morale": "Die Helden teilten {morale} Moralschaden aus.",
+      "defeatedOne": "1 Gegner besiegt.",
+      "defeatedOther": "{count} Gegner besiegt.",
+      "downedOne": "Ein Held ging einmal zu Boden.",
+      "downedOther": "Helden gingen {count} Mal zu Boden.",
+      "critsOne": "Die Helden landeten 1 kritischen Treffer.",
+      "critsOther": "Die Helden landeten {count} kritische Treffer.",
+      "mvp": "Held des Abends: {names} mit {amount} Schaden und Heilung.",
+      "hint": "Mit {link} zeigen die Sitzungsseiten auch die Kampfbilanz jedes Spielabends."
+    },
     "Skip": {
       "off": "Automatische Fotos sind aus.",
       "limit": "Die Grenze automatischer Fotos für diese Sitzung ist erreicht.",
@@ -177,6 +197,10 @@
       "sessionGap": {
         "name": "Neue Sitzung nach",
         "hint": "Stunden ohne Foto, nach denen das nächste Foto eine neue Sitzung beginnt. Die Spielleitung kann im Album auch selbst eine beginnen."
+      },
+      "combatTotals": {
+        "name": "Kampfbilanz auf den Sitzungsseiten",
+        "hint": "Jede Sitzungsseite zeigt auch die Kämpfe dieses Spielabends: Runden, Schaden, Heilung, besiegte Gegner und den Helden des Abends, nur was Spieler sehen dürfen. Braucht Sephral’s Combat Log & Stats."
       }
     },
     "SELFTEST": {

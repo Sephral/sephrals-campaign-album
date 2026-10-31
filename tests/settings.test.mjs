@@ -62,6 +62,14 @@ test("defaults: crits, bosses, victories, farewells and level ups on, fumbles of
   assert.equal(settings.get("playerPhotos").default, "approve");
 });
 
+test("the combat totals on the session pages are a world setting, on by default", () => {
+  const {settings} = register();
+  assert.equal(settings.get("combatTotals").default, true);
+  assert.equal(settings.get("combatTotals").scope, "world");
+  assert.equal(settings.get("combatTotals").type, Boolean);
+  assert.equal(typeof settings.get("combatTotals").onChange, "function");
+});
+
 test("the self test and the debug file are GM only menus", () => {
   const {menus} = register();
   assert.equal(menus.get("selfTest").restricted, true);

@@ -43,6 +43,17 @@ Critical hits count for the player characters unless the setting says everyone. 
 
 In D&D 5e the album also reads the quick roll cards of Ready Set Roll: the attack on the card decides, its damage does not, and each card gets at most one photo.
 
+## Combat totals
+
+With [Sephral’s Combat Log & Stats](https://foundryvtt.com/packages/sephrals-combat-log-stats) active, every session page ends with the battles of that game night: fights and rounds, the damage and healing of the heroes, defeated foes, how often a hero went down, critical hits and the hero of the night. The numbers come from Combat Log & Stats and hold only what players may see there, with the sharing choices of each fight. While player reports are off in Combat Log & Stats, no new totals reach the pages.
+
+* A page counts the game nights of Combat Log & Stats that overlap the time of its photos, or the nearest one a few hours before or after.
+* The totals follow the fights: they update with every new photo and when a fight ends or is changed later. Each start of the world brings every page up to date, so pages from before get their totals then too.
+* Updating the totals changes only their part of the page, so notes you wrote into an older page stay.
+* A page keeps its totals when Combat Log & Stats no longer finds the fights of that night, for example after player reports were turned off or old logs were removed, just like a report already posted.
+* The setting *Combat totals on session pages* hides them on every page and shows them again.
+* Without Combat Log & Stats, or with an older version of it, the album works as before. The GM then sees a small hint with a link at the bottom of the album window. Turning the setting off hides the hint too.
+
 ## Settings
 
 All options are in *Game Settings → Configure Settings → Sephral’s Campaign Album*:
@@ -59,6 +70,7 @@ All options are in *Game Settings → Configure Settings → Sephral’s Campaig
 | Photos by players | Off, the GM decides, or straight into the album |
 | Chat messages | A message with every new photo for everyone, only for the GM, or none |
 | New session after | Hours without a photo after which the next photo starts a new session |
+| Combat totals on session pages | The fights of each game night from Sephral’s Combat Log & Stats on its page, on by default (see [Combat totals](#combat-totals)) |
 | Self test | Checks the album, the image folder and taking photos (GM) |
 | Debug file | Saves a file for bug reports (GM), see below |
 
@@ -72,6 +84,10 @@ When an automatic photo is missing or comes at the wrong moment, a debug file sh
 The file holds the Foundry, system and module versions, the active modules, the settings of the modules, the chat messages with their rolls, for each message the crit or fumble the album found and the check that stopped the photo (no actor, not a player character, no token, moment switched off and so on), the result of each automatic photo since the last reload (limit, pause or a missing view) and the state of the album: journal, number of photos, the current session and whether the limit or the pause applies right now.
 
 The file contains chat text and whispers. Check it before you share it.
+
+## Sephral’s Modules
+
+The first button in the module settings, *Sephral’s Modules* (GMs only), opens one window for all of Sephral's modules in the world: the version, self test, settings, manual and demo video of each, a button that switches on an installed module that is off (Foundry then reloads the world for everyone), and the debug file. Below, *More from Sephral* lists other modules that fit the game system of the world, shown only after a click, each with its demo video. The list is part of the module. Only a video you start is loaded, from the module page on GitHub.
 
 ## Usage statistics
 
@@ -88,7 +104,7 @@ No names, chat messages, notes, dice results or other content of the world are s
 
 ## Storage
 
-* The album is the journal *Campaign Album*. Everyone may read it, only the GM changes it. Each session page keeps its photos in the page's flags and shows them as figures in its text.
+* The album is the journal *Campaign Album*. Everyone may read it, only the GM changes it. Each session page keeps its photos and the combat totals of its night in the page's flags and shows them in its text.
 * The images are WebP files in `worlds/<world>/sephrals-campaign-album/session-<n>/`, on The Forge in `sephrals-campaign-album/<world>/` of the Assets Library. A photo is about 100 to 500 KB.
 * Foundry cannot delete files from a browser. A photo taken out of the album keeps its file in the folder. A declined player photo never becomes a file.
 * Photos are stored by the active GM, who needs the permission to upload files (by default Assistant GM and Gamemaster).

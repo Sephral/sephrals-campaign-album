@@ -7,7 +7,7 @@
 const {ApplicationV2, HandlebarsApplicationMixin, DialogV2} = foundry.applications.api;
 
 import {MODULE_ID, TEMPLATES, addSettingsGear, esc, setting, t} from "./config.mjs";
-import {albumJournal, allPhotos, nextIsNewSession, photoMeta, photosOf, removePhoto, sessionPages,
+import {albumJournal, allPhotos, combatTotalsHint, nextIsNewSession, photoMeta, photosOf, removePhoto, sessionPages,
   setCaption, startNewSession} from "./album.mjs";
 import {photoByGM, submitOwnPhoto} from "./photographer.mjs";
 import {countFeature, markUsed} from "./usage.mjs";
@@ -139,6 +139,8 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
     }));
     context.count = allPhotos().length;
     context.newNext = isGM && nextIsNewSession();
+    // GM only: where the combat totals of the session pages would come from
+    context.combatHint = combatTotalsHint();
 
     // The large view
     const shown = this.#shown();

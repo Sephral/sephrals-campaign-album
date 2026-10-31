@@ -5,6 +5,7 @@
  */
 
 import {MODULE_ID, t} from "./config.mjs";
+import {onCombatTotalsSetting} from "./album.mjs";
 import {refreshAlbum} from "./app.mjs";
 import {registerDebugMenu} from "./debug-file.mjs";
 import {FOLLOW_FOUNDRY, applyModuleLanguage} from "./language.mjs";
@@ -52,7 +53,8 @@ export const SETTINGS = {
     direct: "SCA.SETTINGS.playerPhotos.direct"}},
   chatCards: {type: String, default: "all", choices: {
     all: "SCA.SETTINGS.chatCards.all", gm: "SCA.SETTINGS.chatCards.gm", off: "SCA.SETTINGS.chatCards.off"}},
-  sessionGap: {type: Number, default: 8, range: {min: 1, max: 72, step: 1}}
+  sessionGap: {type: Number, default: 8, range: {min: 1, max: 72, step: 1}},
+  combatTotals: {type: Boolean, default: true, onChange: onCombatTotalsChange}
 };
 
 /* -------------------------------------------- */
@@ -68,6 +70,14 @@ function onLanguageChange(value) {
     redraw();
     if ( game.settings.sheet?.rendered ) game.settings.sheet.render();
   });
+}
+
+/**
+ * The combat totals were switched on or off: the album window updates its hint, the active GM the session pages.
+ */
+function onCombatTotalsChange() {
+  refreshAlbum();
+  onCombatTotalsSetting().catch(err => console.warn(`${MODULE_ID} | The combat totals could not be updated`, err));
 }
 
 /* -------------------------------------------- */

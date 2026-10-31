@@ -84,6 +84,26 @@
       "taken": "Photo taken.",
       "newSession": "The next photo starts a new session."
     },
+    "Combat": {
+      "title": "Battles of the night",
+      "overview": "{fights} in {rounds}.",
+      "fightsOne": "1 fight",
+      "fightsOther": "{count} fights",
+      "roundsOne": "1 round",
+      "roundsOther": "{count} rounds",
+      "damage": "The heroes dealt {damage} damage.",
+      "damageHealing": "The heroes dealt {damage} damage and {healing} healing.",
+      "healing": "The heroes dealt {healing} healing.",
+      "morale": "The heroes dealt {morale} morale damage.",
+      "defeatedOne": "1 foe defeated.",
+      "defeatedOther": "{count} foes defeated.",
+      "downedOne": "A hero went down once.",
+      "downedOther": "Heroes went down {count} times.",
+      "critsOne": "The heroes landed 1 critical hit.",
+      "critsOther": "The heroes landed {count} critical hits.",
+      "mvp": "Hero of the night: {names} with {amount} damage and healing.",
+      "hint": "With {link} the session pages also show the combat totals of each game night."
+    },
     "Skip": {
       "off": "Automatic photos are off.",
       "limit": "The limit of automatic photos for this session is reached.",
@@ -177,6 +197,10 @@
       "sessionGap": {
         "name": "New session after",
         "hint": "Hours without a photo after which the next photo starts a new session. The GM can also start one in the album."
+      },
+      "combatTotals": {
+        "name": "Combat totals on session pages",
+        "hint": "Each session page also shows the fights of that game night: rounds, damage, healing, defeated foes and the hero of the night, only what players may see. Needs Sephral’s Combat Log & Stats."
       }
     },
     "SELFTEST": {

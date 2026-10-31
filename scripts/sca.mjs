@@ -1,8 +1,10 @@
-import {MODULE_ID, flag, setting, t} from "./config.mjs";
-import {albumJournal, allPhotos, ensureAlbum, isAlbumPage} from "./album.mjs";
+import {MODULE_ID, TESTED_VERSIONS, flag, setting, t} from "./config.mjs";
+import {COMBAT_LOG_HOOK, albumJournal, allPhotos, ensureAlbum, isAlbumPage, onCombatLogSaved,
+  refreshCombatTotalsOnReady} from "./album.mjs";
 import {openAlbum, refreshAlbum, takePhotoAsUser} from "./app.mjs";
 import {registerDebug} from "./debug.mjs";
 import {saveDebugFile} from "./debug-file.mjs";
+import {registerHubModule} from "./hub.mjs";
 import {applyModuleLanguage} from "./language.mjs";
 import {registerSocket} from "./net.mjs";
 import {answerSubmission, registerPhotographer, takePhoto} from "./photographer.mjs";
@@ -16,6 +18,7 @@ import {registerUsage} from "./usage.mjs";
 const TOOLS = {album: "sca-album", photo: "sca-photo"};
 
 Hooks.once("init", () => {
+  registerHubModule({moduleId: MODULE_ID, tested: TESTED_VERSIONS});
   registerSettings();
   registerUsage(MODULE_ID, {
     features: ["autoPhoto", "manualPhoto", "playerPhoto", "slideshow", "newSession", "captionEdit", "photoRemove"],
@@ -27,6 +30,8 @@ Hooks.once("init", () => {
   Hooks.on("getSceneControlButtons", onGetSceneControlButtons);
   Hooks.on("renderJournalDirectory", onRenderJournalDirectory);
   Hooks.on("renderChatMessageHTML", onRenderChatMessage);
+  // The combat totals of a game night follow the fights Sephral's Combat Log & Stats saves
+  Hooks.on(COMBAT_LOG_HOOK, onCombatLogSaved);
   for ( const kind of ["create", "update", "delete"] ) {
     Hooks.on(`${kind}JournalEntryPage`, page => {
       if ( isAlbumPage(page) || (page.parent?.id === setting("albumJournal")) ) refreshAlbum();
@@ -64,6 +69,7 @@ Hooks.once("ready", async () => {
   registerPhotographer();
   await ensureAlbum();
   if ( game.user.isActiveGM ) rememberState();
+  refreshCombatTotalsOnReady();
   noticeNewVersions();
 });
 

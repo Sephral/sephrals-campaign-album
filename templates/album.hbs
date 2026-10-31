@@ -43,6 +43,8 @@
     {{/each}}
   </div>
 
+  {{#if combatHint}}<p class="sca-hint"><i class="fa-solid fa-chart-line" inert></i> {{{combatHint}}}</p>{{/if}}
+
   {{#if viewer}}
   <div class="sca-viewer" tabindex="-1" data-page-id="{{viewer.pageId}}" data-photo-id="{{viewer.id}}">
     <div class="sca-viewer-image">

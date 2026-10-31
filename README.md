@@ -8,7 +8,7 @@
 
 ![Campaign Album demo](media/demo.gif)
 
-*The demo uses heroes, adversaries and the arena map of Crucible's playtest adventure.*
+*The demo uses heroes, adversaries and the arena map of Crucible's playtest adventure. The night in numbers shows the premade heroes of the D&D 5e system.*
 
 ## Highlights
 
@@ -16,6 +16,7 @@
 * **Through your players' eyes:** each photo shows what a player of a character in the picture saw, with their light, their vision and their fog of war. Hidden enemies and secret corners stay hidden.
 * **A clean picture:** no selection frames, rulers or wall handles in the photo, and nobody's view jumps around while it is taken.
 * **A scrapbook for the whole group:** one page per session in a journal everyone can read, with captions, dates and who was there.
+* **The night in numbers:** with [Sephral’s Combat Log & Stats](https://foundryvtt.com/packages/sephrals-combat-log-stats) each session page also tells the fights, the damage and the hero of the night.
 * **Slideshow:** relive the campaign at the end of an evening or before the next one.
 * **Players take photos too:** the camera button sends their view to the GM, who adds it with one click, or straight into the album if you like.
 * **You stay in charge:** choose the moments, the limit and whose eyes count, edit captions or take photos out at any time.
