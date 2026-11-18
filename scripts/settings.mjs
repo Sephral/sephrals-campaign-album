@@ -24,7 +24,7 @@ import {runSelfTest} from "./selftest.mjs";
 /** Redraw what shows settings. */
 const redraw = () => {
   refreshAlbum();
-  ui.controls?.render({reset: true});
+  ui.controls?.render({reset: true})?.catch?.(() => {});
 };
 
 /**
