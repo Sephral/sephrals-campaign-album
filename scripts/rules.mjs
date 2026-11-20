@@ -218,3 +218,45 @@ export function photographers(users, owners, perspective, gmId) {
   const rest = ready.filter(u => !owners.includes(u.id)).map(u => u.id);
   return [...first, ...rest, ...gmLast];
 }
+
+/* -------------------------------------------- */
+/*  Recap ("Last time")                          */
+/* -------------------------------------------- */
+
+/** The id of the intro slide of a recap. */
+export const RECAP_INTRO = "intro";
+
+/**
+ * The slides of a recap: the intro, then one slide per photo.
+ * @param {{id: string}[]} photos
+ * @returns {string[]}
+ */
+export function recapSlides(photos) {
+  return [RECAP_INTRO, ...(photos ?? []).map(photo => photo.id)];
+}
+
+/**
+ * The slide a step away from the current one. Stays on the first or last slide at the ends; a slide that is not in
+ * the list counts as the first.
+ * @param {string[]} slides
+ * @param {string} current
+ * @param {number} delta
+ * @returns {{slide: string, last: boolean}}
+ */
+export function recapStep(slides, current, delta) {
+  const index = Math.max(0, slides.indexOf(current));
+  const next = Math.min(slides.length - 1, Math.max(0, index + delta));
+  return {slide: slides[next] ?? RECAP_INTRO, last: next >= slides.length - 1};
+}
+
+/**
+ * Does a recap that started at this time still count as running? A recap left behind by a closed browser or a stopped
+ * world does not.
+ * @param {{active?: boolean, at?: number}|null} state
+ * @param {number} now
+ * @param {number} maxAgeMs
+ * @returns {boolean}
+ */
+export function recapRunning(state, now, maxAgeMs) {
+  return !!state?.active && Number.isFinite(state.at) && ((now - state.at) < maxAgeMs);
+}

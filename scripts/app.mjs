@@ -10,6 +10,7 @@ import {MODULE_ID, TEMPLATES, addSettingsGear, esc, setting, t} from "./config.m
 import {albumJournal, allPhotos, combatTotalsHint, nextIsNewSession, photoMeta, photosOf, removePhoto, sessionPages,
   setCaption, startNewSession} from "./album.mjs";
 import {photoByGM, submitOwnPhoto} from "./photographer.mjs";
+import {joinRecap, liveRecap, offerRecap, startRecap} from "./recap.mjs";
 import {countFeature, markUsed} from "./usage.mjs";
 
 /** Seconds per photo in the slideshow. */
@@ -79,6 +80,8 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
       slideshow: CampaignAlbum.#onSlideshow,
       photo: CampaignAlbum.#onPhoto,
       newSession: CampaignAlbum.#onNewSession,
+      recap: CampaignAlbum.#onRecap,
+      joinRecap: CampaignAlbum.#onJoinRecap,
       openJournal: CampaignAlbum.#onOpenJournal,
       caption: CampaignAlbum.#onCaption,
       remove: CampaignAlbum.#onRemove
@@ -139,6 +142,9 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
     }));
     context.count = allPhotos().length;
     context.newNext = isGM && nextIsNewSession();
+    // The recap of the shown session for everyone (GM), or joining the one that runs
+    context.canRecap = isGM && pages.some(p => photosOf(p).length);
+    context.recapLive = !!liveRecap() && !foundry.applications.instances.get("sca-recap")?.rendered;
     // GM only: where the combat totals of the session pages would come from
     context.combatHint = combatTotalsHint();
 
@@ -281,8 +287,23 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
     if ( !game.user.isGM ) return;
     await startNewSession();
     countFeature(MODULE_ID, "newSession");
+    // The session that ends now gets its recap offered
+    const last = sessionPages().filter(p => photosOf(p).length).at(-1);
+    if ( last ) await offerRecap(last);
     ui.notifications.info(t("SCA.Notice.newSession"));
     this.render();
+  }
+
+  /** @this {CampaignAlbum} */
+  static async #onRecap() {
+    const pages = sessionPages().filter(p => photosOf(p).length);
+    const shown = (this.sessionId && (this.sessionId !== "all")) ? this.sessionId : pages.at(-1)?.id;
+    await startRecap(shown);
+  }
+
+  /** @this {CampaignAlbum} */
+  static #onJoinRecap() {
+    joinRecap();
   }
 
   /** @this {CampaignAlbum} */

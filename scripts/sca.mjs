@@ -1,5 +1,5 @@
 import {MODULE_ID, TESTED_VERSIONS, flag, setting, t} from "./config.mjs";
-import {COMBAT_LOG_HOOK, albumJournal, allPhotos, ensureAlbum, isAlbumPage, onCombatLogSaved,
+import {COMBAT_LOG_HOOK, SESSION_STARTED_HOOK, albumJournal, allPhotos, ensureAlbum, isAlbumPage, onCombatLogSaved,
   refreshCombatTotalsOnReady} from "./album.mjs";
 import {openAlbum, refreshAlbum, takePhotoAsUser} from "./app.mjs";
 import {registerDebug} from "./debug.mjs";
@@ -7,6 +7,7 @@ import {saveDebugFile} from "./debug-file.mjs";
 import {registerHubModule} from "./hub.mjs";
 import {applyModuleLanguage} from "./language.mjs";
 import {registerSocket} from "./net.mjs";
+import {offerRecap, recapOnReady, startRecap} from "./recap.mjs";
 import {answerSubmission, registerPhotographer, takePhoto} from "./photographer.mjs";
 import {noticeNewVersions, runSelfTest} from "./selftest.mjs";
 import {registerSettings} from "./settings.mjs";
@@ -21,7 +22,8 @@ Hooks.once("init", () => {
   registerHubModule({moduleId: MODULE_ID, tested: TESTED_VERSIONS});
   registerSettings();
   registerUsage(MODULE_ID, {
-    features: ["autoPhoto", "manualPhoto", "playerPhoto", "slideshow", "newSession", "captionEdit", "photoRemove"],
+    features: ["autoPhoto", "manualPhoto", "playerPhoto", "slideshow", "newSession", "captionEdit", "photoRemove", "recapOffered",
+      "recapShown"],
     settings: ["autoPhotos", "perspective", "playerPhotos"]
   });
   registerTriggers();
@@ -32,6 +34,9 @@ Hooks.once("init", () => {
   Hooks.on("renderChatMessageHTML", onRenderChatMessage);
   // The combat totals of a game night follow the fights Sephral's Combat Log & Stats saves
   Hooks.on(COMBAT_LOG_HOOK, onCombatLogSaved);
+  // A new session started (active GM): offer the recap of the one before
+  Hooks.on(SESSION_STARTED_HOOK, ({previous}) => offerRecap(previous)
+    .catch(err => console.warn(`${MODULE_ID} | The recap offer failed`, err)));
   for ( const kind of ["create", "update", "delete"] ) {
     Hooks.on(`${kind}JournalEntryPage`, page => {
       if ( isAlbumPage(page) || (page.parent?.id === setting("albumJournal")) ) refreshAlbum();
@@ -47,6 +52,8 @@ Hooks.once("init", () => {
     photos: () => allPhotos().map(({page, photo}) => ({...photo, pageId: page.id, session: page.name})),
     /** The album journal. */
     journal: albumJournal,
+    /** Show the recap of a session to everyone (GM): a page id. */
+    recap: startRecap,
     /** The rules of the running system. */
     system,
     /** Check the album, the image folder and taking photos (GM). */
@@ -71,6 +78,7 @@ Hooks.once("ready", async () => {
   if ( game.user.isActiveGM ) rememberState();
   refreshCombatTotalsOnReady();
   noticeNewVersions();
+  recapOnReady();
 });
 
 /* -------------------------------------------- */
@@ -130,6 +138,12 @@ function onRenderChatMessage(message, html) {
     button.addEventListener("click", event => {
       event.preventDefault();
       openAlbum({photoId: button.dataset.scaOpen});
+    });
+  }
+  for ( const button of element.querySelectorAll("button[data-sca-recap]") ) {
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      startRecap(button.dataset.scaRecap);
     });
   }
   if ( !flag(message, "submission") ) return;

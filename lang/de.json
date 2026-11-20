@@ -64,7 +64,11 @@
       "removeConfirm": "Dieses Foto aus dem Album nehmen? Die Bilddatei bleibt im Weltordner.",
       "playerHint": "Deine aktuelle Ansicht geht an die Spielleitung, die sie ins Album legt.",
       "send": "Senden",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "recap": "Rückblick für alle",
+      "recapHint": "Zeigt allen Spielern die Fotos dieser Sitzung nacheinander, zuerst mit dem Titel der Sitzung.",
+      "recapJoin": "Rückblick ansehen",
+      "recapJoinHint": "Gerade läuft ein Rückblick. Hier öffnen."
     },
     "Card": {
       "speaker": "Kampagnen-Album",
@@ -227,6 +231,21 @@
       "Hint": "Speichert eine Datei für Fehlerberichte über alle Module von Sephral in dieser Welt: Versionen, Einstellungen und was die Module aufgezeichnet haben, etwa die letzten Chatnachrichten, die sie gelesen haben. Sie enthält Chattext und Flüsternachrichten, prüfe sie vor dem Teilen.",
       "Entry": "Debug-Datei speichern (Sephral’s Module)",
       "Saved": "Debug-Datei {file} gespeichert. Sie enthält Chattext und Flüsternachrichten, prüfe sie vor dem Teilen."
+    },
+    "Recap": {
+      "title": "Letztes Mal",
+      "introHeading": "Letztes Mal",
+      "photosOne": "1 Foto",
+      "photosOther": "{count} Fotos",
+      "offer": "Letztes Mal: {count} in {session}. Rückblick zeigen?",
+      "show": "Rückblick zeigen",
+      "notice": "Letztes Mal: {count}. Der Rückblick wartet im Chat und im Album.",
+      "empty": "Diese Sitzung hat keine Fotos zum Zeigen.",
+      "hidden": "Die Seite dieser Sitzung ist für die Spieler nicht lesbar. Ändere zuerst ihre Berechtigungen.",
+      "over": "Der Rückblick ist zu Ende.",
+      "playPause": "Abspielen oder anhalten",
+      "stop": "Für alle beenden",
+      "gmLeads": "Die Spielleitung führt durch den Rückblick."
     }
   }
 }

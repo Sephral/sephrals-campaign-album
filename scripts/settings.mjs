@@ -7,6 +7,7 @@
 import {MODULE_ID, t} from "./config.mjs";
 import {onCombatTotalsSetting} from "./album.mjs";
 import {refreshAlbum} from "./app.mjs";
+import {onRecapChange} from "./recap.mjs";
 import {registerDebugMenu} from "./debug-file.mjs";
 import {FOLLOW_FOUNDRY, applyModuleLanguage} from "./language.mjs";
 import {runSelfTest} from "./selftest.mjs";
@@ -117,6 +118,9 @@ export function registerSettings() {
   game.settings.register(MODULE_ID, "albumJournal", {scope: "world", config: false, type: String, default: "",
     onChange: () => refreshAlbum()});
   game.settings.register(MODULE_ID, "session", {scope: "world", config: false, type: Object, default: {}});
+  // The recap that runs for everyone: which session, which slide
+  game.settings.register(MODULE_ID, "recap", {scope: "world", config: false, type: Object, default: {},
+    onChange: () => onRecapChange()});
 
   // The newer Foundry and system versions the GM was already told about
   game.settings.register(MODULE_ID, "acknowledgedVersions", {scope: "client", config: false, type: String, default: ""});

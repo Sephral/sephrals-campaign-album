@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {readFile} from "node:fs/promises";
 import {KINDS, TRIGGERS, autoAllowed, combatHtml, combatLines, combatSnapshot, naturalD20, nearSpan, needsNewSession,
-  pageHtml, photoFileName, photographers, sunrisesBetween, withCombatSection}
+  pageHtml, photoFileName, photographers, recapRunning, recapSlides, recapStep, sunrisesBetween, withCombatSection}
   from "../scripts/rules.mjs";
 
 const HOUR = 3600 * 1000;
@@ -190,4 +190,24 @@ test("a fight belongs to the pages whose photos lie less than the margin away", 
   assert.equal(nearSpan(span, Date.UTC(2026, 9, 24, 10), 12 * HOUR), true);
   assert.equal(nearSpan(span, Date.UTC(2026, 9, 25, 12), 12 * HOUR), false);
   assert.equal(nearSpan(span, NaN, 12 * HOUR), false);
+});
+
+test("a recap starts with the intro and steps through the photos", () => {
+  const slides = recapSlides([{id: "a"}, {id: "b"}]);
+  assert.deepEqual(slides, ["intro", "a", "b"]);
+  assert.deepEqual(recapStep(slides, "intro", 1), {slide: "a", last: false});
+  assert.deepEqual(recapStep(slides, "a", 1), {slide: "b", last: true});
+  assert.deepEqual(recapStep(slides, "b", 1), {slide: "b", last: true});
+  assert.deepEqual(recapStep(slides, "intro", -1), {slide: "intro", last: false});
+  // a slide this client does not know counts as the first
+  assert.deepEqual(recapStep(slides, "gone", 1), {slide: "a", last: false});
+  assert.deepEqual(recapStep(recapSlides([]), "intro", 1), {slide: "intro", last: true});
+});
+
+test("a recap counts as running only while it is recent", () => {
+  const now = 10 * HOUR;
+  assert.equal(recapRunning({active: true, at: now - HOUR}, now, 3 * HOUR), true);
+  assert.equal(recapRunning({active: true, at: now - (4 * HOUR)}, now, 3 * HOUR), false);
+  assert.equal(recapRunning({active: false, at: now}, now, 3 * HOUR), false);
+  assert.equal(recapRunning(null, now, 3 * HOUR), false);
 });

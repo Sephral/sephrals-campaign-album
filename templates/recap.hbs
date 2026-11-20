@@ -1,0 +1,32 @@
+<div class="sca-recap-body">
+  {{#if intro}}
+  <div class="sca-recap-intro">
+    <i class="fa-solid fa-clapperboard" inert></i>
+    <h2>{{intro.heading}}</h2>
+    <p class="sca-recap-session">{{intro.title}}</p>
+    <p class="sca-recap-date">{{intro.date}} · {{intro.count}}</p>
+  </div>
+  {{else if photo}}
+  <div class="sca-recap-photo">
+    <img src="{{photo.src}}" alt="{{photo.caption}}">
+    <div class="sca-recap-caption">
+      <strong>{{photo.label}}</strong>
+      <small>{{photo.meta}}</small>
+      <small class="sca-position">{{photo.position}}</small>
+    </div>
+  </div>
+  {{else}}
+  <p class="sca-empty">{{localize "SCA.Recap.over"}}</p>
+  {{/if}}
+  <footer class="sca-recap-controls">
+    {{#if isGM}}
+    <button type="button" class="sca-icon" data-action="prev" {{#unless hasPrev}}disabled{{/unless}} aria-label="{{localize "SCA.Album.prev"}}"><i class="fa-solid fa-backward-step" inert></i></button>
+    <button type="button" class="sca-icon" data-action="play" aria-label="{{localize "SCA.Recap.playPause"}}"><i class="fa-solid {{#if playing}}fa-pause{{else}}fa-play{{/if}}" inert></i></button>
+    <button type="button" class="sca-icon" data-action="next" {{#unless hasNext}}disabled{{/unless}} aria-label="{{localize "SCA.Album.next"}}"><i class="fa-solid fa-forward-step" inert></i></button>
+    <span class="sca-spacer"></span>
+    <button type="button" data-action="stop"><i class="fa-solid fa-stop" inert></i> {{localize "SCA.Recap.stop"}}</button>
+    {{else}}
+    <small>{{localize "SCA.Recap.gmLeads"}}</small>
+    {{/if}}
+  </footer>
+</div>

@@ -324,3 +324,102 @@
   margin: 0;
   padding-left: 1.2em;
 }
+
+/* The recap ("Last time") */
+.sca-recap .window-content {
+  padding: 0;
+  background: rgb(10 10 12 / 0.97);
+  color: #eee;
+}
+
+.sca-recap .sca-recap-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sca-recap .sca-recap-intro {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.sca-recap .sca-recap-intro > i {
+  font-size: 40px;
+  opacity: 0.6;
+}
+
+.sca-recap .sca-recap-intro h2 {
+  margin: 8px 0 0;
+  border: none;
+  font-size: var(--font-size-32, 32px);
+  color: inherit;
+}
+
+.sca-recap .sca-recap-session {
+  margin: 0;
+  font-size: var(--font-size-20, 20px);
+}
+
+.sca-recap .sca-recap-date {
+  margin: 0;
+  opacity: 0.7;
+}
+
+.sca-recap .sca-recap-photo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  padding: 12px 16px 0;
+}
+
+.sca-recap .sca-recap-photo img {
+  flex: 1;
+  min-height: 0;
+  max-width: 100%;
+  border: 6px solid #f4efe6;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.6);
+  object-fit: contain;
+}
+
+.sca-recap .sca-recap-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0 2px;
+  text-align: center;
+}
+
+.sca-recap .sca-recap-caption strong {
+  font-size: var(--font-size-18, 18px);
+}
+
+.sca-recap .sca-recap-caption small {
+  opacity: 0.75;
+}
+
+.sca-recap .sca-recap-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+}
+
+.sca-recap .sca-recap-controls button {
+  color: inherit;
+}
+
+.sca-recap .sca-recap-controls .sca-spacer {
+  flex: 1;
+}
+
+.sca-recap-offer button {
+  margin-top: 4px;
+}

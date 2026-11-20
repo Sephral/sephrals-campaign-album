@@ -118,6 +118,9 @@ export async function startNewSession() {
   await game.settings.set(MODULE_ID, "session", {...sessionState(), forceNew: true});
 }
 
+/** Called (with {page, previous}) on the active GM's client when a new session page was created. */
+export const SESSION_STARTED_HOOK = `${MODULE_ID}.sessionStarted`;
+
 /**
  * The page of the current session, created when a new session starts.
  * @param {number} now
@@ -129,6 +132,7 @@ async function currentPage(now) {
   let state = sessionState();
   let page = journal.pages.get(state.pageId);
   if ( !page || needsNewSession(state, now, setting("sessionGap")) ) {
+    const previous = sessionPages().at(-1) ?? null;
     const number = Math.max(state.number, ...sessionPages().map(p => flag(p, "session.number") ?? 0)) + 1;
     const date = new Date(now).toLocaleDateString(game.i18n.lang, {year: "numeric", month: "long", day: "numeric"});
     [page] = await journal.createEmbeddedDocuments("JournalEntryPage", [{
@@ -139,7 +143,9 @@ async function currentPage(now) {
       flags: {[MODULE_ID]: {session: {number, started: now}, photos: []}}
     }]);
     state = {number, pageId: page.id, lastPhoto: 0, autoCount: 0, lastAuto: 0, forceNew: false};
+    state.recapFor = sessionState().recapFor ?? "";
     await game.settings.set(MODULE_ID, "session", state);
+    if ( previous ) Hooks.callAll(SESSION_STARTED_HOOK, {page, previous});
   }
   return {page, state};
 }

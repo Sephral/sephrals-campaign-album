@@ -10,6 +10,8 @@
     <span class="sca-count">{{localize "SCA.Album.count" count=count}}</span>
     <span class="sca-spacer"></span>
     <button type="button" data-action="slideshow"><i class="fa-solid fa-play" inert></i> {{localize "SCA.Album.slideshow"}}</button>
+    {{#if canRecap}}<button type="button" data-action="recap" data-tooltip="{{localize "SCA.Album.recapHint"}}"><i class="fa-solid fa-clapperboard" inert></i> {{localize "SCA.Album.recap"}}</button>{{/if}}
+    {{#if recapLive}}<button type="button" data-action="joinRecap" data-tooltip="{{localize "SCA.Album.recapJoinHint"}}"><i class="fa-solid fa-clapperboard" inert></i> {{localize "SCA.Album.recapJoin"}}</button>{{/if}}
     {{#if canTake}}<button type="button" data-action="photo"><i class="fa-solid fa-camera" inert></i> {{localize "SCA.Album.takePhoto"}}</button>{{/if}}
     {{#if isGM}}<button type="button" data-action="newSession" data-tooltip="{{localize "SCA.Album.newSessionHint"}}"><i class="fa-solid fa-book-open" inert></i> {{localize "SCA.Album.newSession"}}</button>{{/if}}
     <button type="button" class="sca-icon" data-action="openJournal" data-tooltip="{{localize "SCA.Album.openJournal"}}"><i class="fa-solid fa-book" inert></i></button>

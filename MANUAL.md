@@ -17,6 +17,17 @@ Open the album from the token controls on the left (images icon), with the butto
 * **New session:** a session ends on its own after some hours without photos (setting). The button *New session* lets the next photo start a new page right away.
 * **Photos by players:** depending on the setting, a player's photo appears as a chat message only you see, with *Add* and *Decline*, or goes straight into the album.
 
+## Last time (recap)
+
+The recap shows the photos of one session to everyone, one after another, behind an intro slide with the session title, date and number of photos.
+
+* **Offer:** when a new session starts, the GM gets a whispered chat card *Last time: 5 photos in Session 2. Show the recap?* with the button *Show the recap* and a short notice. It appears when the new session page is created (the first photo after the gap) or when you press *New session*, once per session. Nothing opens by itself.
+* **Any session:** in the album window, the button *Recap for everyone* (GM) starts the recap of the session selected on top, or of the latest one when *All sessions* is selected. From a script: `game.modules.get("sephrals-campaign-album").api.recap(pageId)`.
+* **The GM leads:** the recap opens as a window on every connected screen. It advances every six seconds. The GM pauses, steps back and forth and ends it for everyone with *End for everyone*. Closing the window does the same. Players only watch and can close the window for themselves, it does not open again for them.
+* **Late joiners:** a player who logs in while a recap runs gets the window right away. A player who closed it finds the button *Watch the recap* in the album.
+* **What is shown:** only photos that are in the album, which means approved ones, and only of session pages the players may read. A session page whose permissions hide it from players cannot be shown to everyone, the GM is told so. Each screen shows only what its user may read.
+* The running recap is kept in the hidden world setting `recap` (session page, current slide). A recap left behind for more than three hours is ended at the next start.
+
 ## Whose eyes
 
 Every photo is taken on one client, so it shows what that user saw, with lighting, vision, walls and fog of war:
@@ -96,7 +107,7 @@ The module can take part in a small usage report shared by all of Sephral’s mo
 With the GM’s consent only the active GM’s browser counts, and it sends at most one report a day. The counts are kept in a hidden world setting, so all browsers and computers of the GM count together, and turning the statistics off deletes them. A copy of a world gets its own world ID. The question lists everything the report contains, from the Foundry version to a random world ID. For the Campaign Album it holds:
 
 * on how many of the last 30 days the module was used
-* how often photos are taken automatically or by hand, players send in photos, the slideshow runs, a new session page starts, captions are edited and photos are removed
+* how often photos are taken automatically or by hand, players send in photos, the slideshow runs, a new session page starts, the recap is offered and shown, captions are edited and photos are removed
 * the settings *Automatic photos*, *Through whose eyes* and *Photos by players* (only the chosen option)
 * where errors occur in the module code: file, line, error type and whether the error arose in the module itself, in Foundry, in the game system or in another module, never the error message or the name of another module
 

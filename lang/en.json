@@ -64,7 +64,11 @@
       "removeConfirm": "Take this photo out of the album? The image file stays in the world folder.",
       "playerHint": "Your current view goes to the GM, who puts it into the album.",
       "send": "Send",
-      "settings": "Settings"
+      "settings": "Settings",
+      "recap": "Recap for everyone",
+      "recapHint": "Shows the photos of this session to all players, one after another, with the session title first.",
+      "recapJoin": "Watch the recap",
+      "recapJoinHint": "A recap is running. Open it."
     },
     "Card": {
       "speaker": "Campaign Album",
@@ -227,6 +231,21 @@
       "Hint": "Saves one file for bug reports about all of Sephral’s modules in this world: versions, settings and what the modules recorded, such as the latest chat messages they read. It contains chat text and whispers, check it before you share it.",
       "Entry": "Save Debug File (Sephral’s Modules)",
       "Saved": "Debug file {file} saved. It contains chat text and whispers, check it before you share it."
+    },
+    "Recap": {
+      "title": "Last time",
+      "introHeading": "Last time",
+      "photosOne": "1 photo",
+      "photosOther": "{count} photos",
+      "offer": "Last time: {count} in {session}. Show the recap?",
+      "show": "Show the recap",
+      "notice": "Last time: {count}. The recap waits in the chat and in the album.",
+      "empty": "This session has no photos to show.",
+      "hidden": "This session page is not readable for the players. Change its permissions first.",
+      "over": "The recap is over.",
+      "playPause": "Play or pause",
+      "stop": "End for everyone",
+      "gmLeads": "The GM leads the recap."
     }
   }
 }
