@@ -56,6 +56,27 @@ function versionLine() {
 }
 
 /**
+ * The chat report of a self-test.
+ * @param {string} summary
+ * @param {string} versions
+ * @param {string[]} problems
+ * @returns {string}
+ */
+export function reportHtml(summary, versions, problems) {
+  let content = `<h3>${esc(t("SCA.SELFTEST.Title"))}</h3><p>${esc(summary)}</p><p><small>${esc(versions)}</small></p>`;
+  if ( problems.length ) content += `<ul>${problems.map(p => `<li>${esc(p)}</li>`).join("")}</ul>`;
+  return content;
+}
+
+/**
+ * The line with the installed and the tested versions (for the report).
+ * @returns {string}
+ */
+export function versionsText() {
+  return versionLine();
+}
+
+/**
  * Run the self-test and report the result as a notification and a whispered chat message.
  * @param {object} [options]
  * @param {boolean} [options.report=true]   Post the chat report
@@ -73,9 +94,7 @@ export async function runSelfTest({report=true}={}) {
   if ( problems.length ) ui.notifications.warn(summary, {permanent: true});
   else ui.notifications.info(summary);
   if ( report ) {
-    let content = `<h3>${esc(t("SCA.SELFTEST.Title"))}</h3><p>${esc(summary)}</p><p><small>${esc(versions)}</small></p>`;
-    if ( problems.length ) content += `<ul>${problems.map(p => `<li>${esc(p)}</li>`).join("")}</ul>`;
-    await ChatMessage.implementation.create({content, whisper: [game.user.id],
+    await ChatMessage.implementation.create({content: reportHtml(summary, versions, problems), whisper: [game.user.id],
       speaker: {alias: game.modules.get(MODULE_ID).title}});
   }
   return {problems, checks};

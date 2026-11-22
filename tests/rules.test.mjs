@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {readFile} from "node:fs/promises";
-import {KINDS, TRIGGERS, autoAllowed, combatHtml, combatLines, combatSnapshot, naturalD20, nearSpan, needsNewSession,
-  pageHtml, photoFileName, photographers, recapRunning, recapSlides, recapStep, sunrisesBetween, withCombatSection}
+import {KINDS, TRIGGERS, autoAllowed, combatHtml, combatLines, combatSnapshot, isAboveParty, naturalD20, nearSpan,
+  needsNewSession, pageHtml, partyLevelOf, pf2eOutcome, photoFileName, photographers, recapRunning, recapSlides, recapStep,
+  sunrisesBetween, withCombatSection}
   from "../scripts/rules.mjs";
 
 const HOUR = 3600 * 1000;
@@ -210,4 +211,25 @@ test("a recap counts as running only while it is recent", () => {
   assert.equal(recapRunning({active: true, at: now - (4 * HOUR)}, now, 3 * HOUR), false);
   assert.equal(recapRunning({active: false, at: now}, now, 3 * HOUR), false);
   assert.equal(recapRunning(null, now, 3 * HOUR), false);
+});
+
+test("party level and bosses by level", () => {
+  assert.equal(partyLevelOf([5, 5, 6]), 5);
+  assert.equal(partyLevelOf([5, 6]), 6);
+  assert.equal(partyLevelOf([]), null);
+  assert.equal(partyLevelOf(undefined), null);
+  assert.equal(partyLevelOf([3, NaN]), 3);
+  assert.equal(isAboveParty(7, 5), true);
+  assert.equal(isAboveParty(6, 5), false);
+  assert.equal(isAboveParty(6, 5, 1), true);
+  assert.equal(isAboveParty(9, null), false);
+  assert.equal(isAboveParty(NaN, 5), false);
+});
+
+test("Pathfinder 2e outcomes: attacks always, checks by choice, damage rolls never", () => {
+  assert.deepEqual(pf2eOutcome({type: "attack-roll", outcome: "criticalSuccess"}), {kind: "crit", attack: true});
+  assert.deepEqual(pf2eOutcome({type: "skill-check", outcome: "criticalFailure"}), {kind: "fumble", attack: false});
+  assert.deepEqual(pf2eOutcome({type: "skill-check", outcome: "criticalFailure"}, {checks: false}), {kind: null, attack: false});
+  assert.deepEqual(pf2eOutcome({type: "damage-roll", outcome: "criticalSuccess"}), {kind: null, attack: false});
+  assert.deepEqual(pf2eOutcome(undefined), {kind: null, attack: false});
 });

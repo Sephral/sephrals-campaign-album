@@ -18,6 +18,7 @@
 * **A scrapbook for the whole group:** one page per session in a journal everyone can read, with captions, dates and who was there.
 * **The night in numbers:** with [Sephral’s Combat Log & Stats](https://foundryvtt.com/packages/sephrals-combat-log-stats) each session page also tells the fights, the damage and the hero of the night.
 * **Slideshow:** relive the campaign at the end of an evening, or let the GM show the photos of the last session when a new one starts.
+* **Share a session as one picture:** a contact sheet with up to nine photos, their captions and a badge for each big moment. Copy it, save it or post it in the chat.
 * **Players take photos too:** the camera button sends their view to the GM, who adds it with one click, or straight into the album if you like.
 * **You stay in charge:** choose the moments, the limit and whose eyes count, edit captions or take photos out at any time.
 
@@ -35,7 +36,7 @@ A GM has to be online for photos to be stored. The photos are images in your wor
 
 Search for **Campaign Album** in Foundry's module browser or open the [package page](https://foundryvtt.com/packages/sephrals-campaign-album).
 
-Foundry VTT 13 and 14 · any game system, built in support for Crucible and D&D 5e · English and German
+Foundry VTT 13 and 14 · any game system, built in support for Crucible, D&D 5e and Pathfinder 2e · English and German
 
 ## Learn more
 

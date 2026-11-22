@@ -7,14 +7,34 @@
 const {ApplicationV2, HandlebarsApplicationMixin, DialogV2} = foundry.applications.api;
 
 import {MODULE_ID, TEMPLATES, addSettingsGear, esc, setting, t} from "./config.mjs";
-import {albumJournal, allPhotos, combatTotalsHint, nextIsNewSession, photoMeta, photosOf, removePhoto, sessionPages,
+import {albumJournal, combatTotalsHint, nextIsNewSession, photoMeta, photosOf, removePhoto, sessionPages,
   setCaption, startNewSession} from "./album.mjs";
 import {photoByGM, submitOwnPhoto} from "./photographer.mjs";
 import {joinRecap, liveRecap, offerRecap, startRecap} from "./recap.mjs";
+import {runShareImage, shareButtons} from "./share-image-actions.mjs";
 import {countFeature, markUsed} from "./usage.mjs";
 
 /** Seconds per photo in the slideshow. */
 const SLIDE_SECONDS = 5;
+
+/**
+ * The form of the dialog in which a player sends a photo.
+ * @returns {string}
+ */
+export function photoPromptHtml() {
+  return `<p>${esc(t("SCA.Album.playerHint"))}</p><div class="form-group"><label>${esc(t("SCA.Album.caption"))}</label>`
+    + `<input type="text" name="caption" maxlength="300" autofocus></div>`;
+}
+
+/**
+ * The form of the dialog in which the GM edits a caption.
+ * @param {string} [value]
+ * @returns {string}
+ */
+export function captionPromptHtml(value="") {
+  return `<div class="form-group"><label>${esc(t("SCA.Album.caption"))}</label>`
+    + `<input type="text" name="caption" maxlength="300" value="${esc(value)}" autofocus></div>`;
+}
 
 /**
  * Open the album, optionally at a photo.
@@ -43,8 +63,7 @@ export async function takePhotoAsUser() {
   if ( setting("playerPhotos") === "off" ) return ui.notifications.warn(t("SCA.Error.playerPhotosOff"));
   const caption = await DialogV2.prompt({
     window: {title: t("SCA.Album.takePhoto")},
-    content: `<p>${esc(t("SCA.Album.playerHint"))}</p><div class="form-group"><label>${esc(t("SCA.Album.caption"))}</label>`
-      + `<input type="text" name="caption" maxlength="300" autofocus></div>`,
+    content: photoPromptHtml(),
     rejectClose: false,
     ok: {label: t("SCA.Album.send"), callback: (event, button) => button.form.elements.caption.value}
   });
@@ -84,7 +103,8 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
       joinRecap: CampaignAlbum.#onJoinRecap,
       openJournal: CampaignAlbum.#onOpenJournal,
       caption: CampaignAlbum.#onCaption,
-      remove: CampaignAlbum.#onRemove
+      remove: CampaignAlbum.#onRemove,
+      shareImage: CampaignAlbum.#onShareImage
     }
   };
 
@@ -107,6 +127,30 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
     return t("SCA.Title");
   }
 
+  /**
+   * The session pages the window shows. Sample windows (sample-windows.mjs) read made-up pages instead.
+   * @returns {JournalEntryPage[]}
+   */
+  _pages() {
+    return sessionPages();
+  }
+
+  /**
+   * Is the album set up? Sample windows answer for themselves.
+   * @returns {boolean}
+   */
+  _ready() {
+    return !!albumJournal();
+  }
+
+  /**
+   * Every photo of the pages in order, with its page.
+   * @returns {{page: JournalEntryPage, photo: object}[]}
+   */
+  _allPhotos() {
+    return this._pages().flatMap(page => photosOf(page).map(photo => ({page, photo})));
+  }
+
   /* -------------------------------------------- */
 
   /**
@@ -114,7 +158,7 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {{page: JournalEntryPage, photo: object}[]}
    */
   #shown() {
-    const all = allPhotos();
+    const all = this._allPhotos();
     if ( this.#slideshow || (this.sessionId === "all") || !this.sessionId ) return all;
     return all.filter(entry => entry.page.id === this.sessionId);
   }
@@ -122,9 +166,9 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    const pages = sessionPages();
+    const pages = this._pages();
     const isGM = game.user.isGM;
-    context.ready = !!albumJournal();
+    context.ready = this._ready();
     context.isGM = isGM;
     context.canTake = isGM || (setting("playerPhotos") !== "off");
     context.noGM = !game.users.activeGM;
@@ -137,10 +181,11 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
     context.sessions = pages.filter(p => (this.sessionId === "all") || (p.id === this.sessionId)).map(page => ({
       id: page.id,
       title: page.name,
+      ...shareButtons(page),
       photos: photosOf(page).map(photo => ({...photo, pageId: page.id, meta: photoMeta(photo),
         label: photo.caption || t(`SCA.Kind.${photo.kind}`)}))
     }));
-    context.count = allPhotos().length;
+    context.count = this._allPhotos().length;
     context.newNext = isGM && nextIsNewSession();
     // The recap of the shown session for everyone (GM), or joining the one that runs
     context.canRecap = isGM && pages.some(p => photosOf(p).length);
@@ -266,14 +311,14 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @this {CampaignAlbum} */
   static #onSlideshow() {
     if ( this.#slideshow ) return this.#closeViewer();
-    const all = allPhotos();
+    const all = this._allPhotos();
     if ( !all.length ) return ui.notifications.info(t("SCA.Album.empty"));
     this.viewing = all[0].photo.id;
     this.#slideshow = setInterval(() => {
       if ( !this.rendered ) return this.#stopSlideshow();
       this.#step(1);
     }, SLIDE_SECONDS * 1000);
-    countFeature(MODULE_ID, "slideshow");
+    if ( !this.isSample ) countFeature(MODULE_ID, "slideshow");
     this.render();
   }
 
@@ -315,6 +360,17 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /** @this {CampaignAlbum} */
+  static async #onShareImage(event, target) {
+    const buttons = target.closest("[data-share-page]")?.querySelectorAll("button") ?? [target];
+    for ( const button of buttons ) button.disabled = true;
+    try {
+      await runShareImage(target.dataset.kind, target.closest("[data-share-page]")?.dataset.sharePage);
+    } finally {
+      for ( const button of buttons ) button.disabled = false;
+    }
+  }
+
+  /** @this {CampaignAlbum} */
   static async #onCaption(event, target) {
     if ( !game.user.isGM ) return;
     const {pageId, photoId} = CampaignAlbum.#ids(target);
@@ -322,8 +378,7 @@ export class CampaignAlbum extends HandlebarsApplicationMixin(ApplicationV2) {
     if ( !photo ) return;
     const caption = await DialogV2.prompt({
       window: {title: t("SCA.Album.editCaption")},
-      content: `<div class="form-group"><label>${esc(t("SCA.Album.caption"))}</label>`
-        + `<input type="text" name="caption" maxlength="300" value="${esc(photo.caption)}" autofocus></div>`,
+      content: captionPromptHtml(photo.caption),
       rejectClose: false,
       ok: {label: t("SCA.Album.save"), callback: (event, button) => button.form.elements.caption.value}
     });

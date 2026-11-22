@@ -10,6 +10,7 @@ import {registerSocket} from "./net.mjs";
 import {offerRecap, recapOnReady, startRecap} from "./recap.mjs";
 import {answerSubmission, registerPhotographer, takePhoto} from "./photographer.mjs";
 import {noticeNewVersions, runSelfTest} from "./selftest.mjs";
+import {sampleWindows} from "./sample-windows.mjs";
 import {registerSettings} from "./settings.mjs";
 import {system} from "./systems.mjs";
 import {registerTriggers, rememberState} from "./triggers.mjs";
@@ -23,7 +24,7 @@ Hooks.once("init", () => {
   registerSettings();
   registerUsage(MODULE_ID, {
     features: ["autoPhoto", "manualPhoto", "playerPhoto", "slideshow", "newSession", "captionEdit", "photoRemove", "recapOffered",
-      "recapShown"],
+      "recapShown", "shareImageCopied", "shareImageSaved", "shareImagePosted"],
     settings: ["autoPhotos", "perspective", "playerPhotos"]
   });
   registerTriggers();
@@ -58,6 +59,8 @@ Hooks.once("init", () => {
     system,
     /** Check the album, the image folder and taking photos (GM). */
     runSelfTest,
+    /** The windows and chat cards filled with made-up photos, nothing saved (translators, testing; see samples.mjs). */
+    samples: () => sampleWindows(),
     /** Save the debug file of Sephral's modules (GM): about one chat message, or without an id the latest picture. */
     saveDebugFile: messageId => saveDebugFile(messageId ?? null, {moduleId: MODULE_ID})
   };

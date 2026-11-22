@@ -1,10 +1,11 @@
 /**
  * What the album needs to know about the game system: which rolls are critical, who counts as a player character,
- * a boss, dead, and which level a character has. D&D 5e and Crucible are built in, other systems use the generic
+ * a boss, dead, and which level a character has. D&D 5e, Pathfinder 2e and Crucible are built in, other systems use the generic
  * rules (a natural 20 or 1 on a d20, the "dead" status, no bosses, no levels).
  */
 
-import {naturalD20} from "./rules.mjs";
+import {setting} from "./config.mjs";
+import {isAboveParty, naturalD20, partyLevelOf, pf2eOutcome} from "./rules.mjs";
 
 /**
  * The defeated status id of this world.
@@ -71,6 +72,15 @@ const generic = {
   },
 
   /**
+   * Does the critical roll of a message count as an attack (a "critical hit") rather than another kind of check?
+   * @param {ChatMessage} message
+   * @returns {boolean}
+   */
+  isAttack(message) {
+    return true;
+  },
+
+  /**
    * The actors a roll was aimed at, as UUIDs.
    * @param {ChatMessage} message
    * @returns {string[]}
@@ -93,6 +103,24 @@ const generic = {
    */
   isDead(actor) {
     return !!actor?.statuses?.has(deadStatus());
+  },
+
+  /**
+   * Is this character down but not dead (dying)? Only systems with a dying state know it.
+   * @param {Actor} actor
+   * @returns {boolean}
+   */
+  isDown(actor) {
+    return false;
+  },
+
+  /**
+   * May this actor stand on the enemy side of a fight? Hazards and the like never "fall" and would stop a victory.
+   * @param {Actor} actor
+   * @returns {boolean}
+   */
+  isFoe(actor) {
+    return true;
   },
 
   /**
@@ -200,8 +228,96 @@ const crucible = {
   }
 };
 
+/**
+ * The level of the party in a Pathfinder 2e fight: the average of the player characters in the active fight,
+ * else of all player characters in the world.
+ * @returns {number|null}
+ */
+function pf2ePartyLevel() {
+  const fight = game.combats?.active ?? game.combat;
+  const inFight = (fight?.combatants ?? []).map(c => c.actor).filter(a => a?.type === "character" && a.hasPlayerOwner);
+  const owned = [...(game.actors ?? [])].filter(a => a.type === "character" && a.hasPlayerOwner);
+  // Without a fight: the heroes on the scene, else every player character (retired ones skew the average)
+  const onScene = new Set([...(globalThis.canvas?.scene?.tokens ?? [])].map(t => t.actorId));
+  const there = owned.filter(a => onScene.has(a.id));
+  const actors = inFight.length ? inFight : (there.length ? there : owned);
+  return partyLevelOf(actors.map(a => Number(a.system?.details?.level?.value)));
+}
+
+/**
+ * Pathfinder 2e (7.x and 8.x). Critical successes and failures from the degree of success of attacks (and, by a
+ * setting, of skill checks, saves and Perception), creatures clearly above the party as bosses, dying and dead
+ * characters, character levels.
+ */
+const pf2e = {
+  ...generic,
+  id: "pf2e",
+
+  /** @override */
+  isCharacter(actor) {
+    return actor?.type === "character";
+  },
+
+  /** @override */
+  rollEvent(message) {
+    // Secret and blind rolls of the GM stay out of the album
+    if ( message?.blind || (message?.whisper?.length > 0) ) return null;
+    const context = message?.flags?.pf2e?.context;
+    if ( !context ) return null;
+    let checks = false;
+    try {
+      checks = setting("critChecks") === true;
+    } catch {}
+    return pf2eOutcome(context, {checks}).kind;
+  },
+
+  /** @override */
+  isAttack(message) {
+    return /attack-roll$/.test(String(message?.flags?.pf2e?.context?.type ?? ""));
+  },
+
+  /** @override */
+  targetUuids(message) {
+    // The context names the target as {actor, token} UUIDs; the token tells which creature was meant
+    const target = message?.flags?.pf2e?.context?.target;
+    return [target?.token, target?.actor].filter(Boolean).slice(0, 1);
+  },
+
+  /** @override */
+  isBoss(actor) {
+    // An NPC two or more levels above the party; the level of an elite creature already includes its raise
+    if ( actor?.type !== "npc" || actor.hasPlayerOwner ) return false;
+    return isAboveParty(Number(actor.system?.details?.level?.value), pf2ePartyLevel());
+  },
+
+  /** @override */
+  isDead(actor) {
+    if ( generic.isDead(actor) ) return true;
+    if ( actor?.type !== "character" ) return actor?.isDead === true;
+    // A character at 0 Hit Points is only dying until the condition arrives, so the hit points do not count here.
+    // At the maximum dying value the character is dead, whether or not the dead mark is set yet.
+    const dying = actor.system?.attributes?.dying;
+    return ((dying?.max ?? 0) > 0) && ((dying?.value ?? 0) >= dying.max);
+  },
+
+  /** @override */
+  isDown(actor) {
+    return (actor?.type === "character") && ((actor.system?.attributes?.dying?.value ?? 0) > 0);
+  },
+
+  /** @override */
+  isFoe(actor) {
+    return !["hazard", "loot", "party", "vehicle"].includes(actor?.type);
+  },
+
+  /** @override */
+  level(actor) {
+    return actor?.type === "character" ? (Number(actor.system?.details?.level?.value) || 0) : null;
+  }
+};
+
 /** Built in systems. */
-const SYSTEMS = {dnd5e, crucible};
+const SYSTEMS = {dnd5e, pf2e, crucible};
 
 /**
  * The rules of the running system.

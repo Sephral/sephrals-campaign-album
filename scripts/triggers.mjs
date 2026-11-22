@@ -1,7 +1,7 @@
 /**
  * The moments the album captures on its own. Only the active GM's client watches, so each moment is taken once:
  * critical hits and fumbles (after Dice So Nice has rolled), a boss that falls, the last enemy that falls, a player
- * character who dies, a character who reaches a new level and the sunrise of a new day. A limit per session and a
+ * character who goes down (Pathfinder 2e: dying), a player character who dies, a character who reaches a new level and the sunrise of a new day. A limit per session and a
  * cooldown keep the album special.
  */
 
@@ -19,6 +19,9 @@ const deadState = new Map();
 
 /** When an actor fell last, by actor uuid (a defeated mark and the dead status arrive one after the other). */
 const recentFalls = new Map();
+
+/** Whether characters were down (dying) as last seen, by actor id. */
+const downState = new Map();
 
 /** Levels of characters as last seen, by actor id. */
 const levels = new Map();
@@ -173,9 +176,12 @@ async function onCreateChatMessage(message) {
     if ( (target?.documentName === "Token") && (target.parent === scene) && (target !== token) ) targets.push(target);
   }
   const name = token.name;
-  const target = targets[0]?.name;
-  const caption = target ? t(`SCA.Caption.${kind}Target`, {name, target}) : t(`SCA.Caption.${kind}`, {name});
-  await auto({kind, tokens: [token, ...targets], caption, actors: [...new Set([name, ...targets.map(x => x.name)])]},
+  // A critical success of a skill check or a save is no hit: no target, its own words
+  const attack = system().isAttack(message);
+  const target = attack ? targets[0]?.name : null;
+  const caption = !attack ? t(`SCA.Caption.${kind}Check`, {name})
+    : (target ? t(`SCA.Caption.${kind}Target`, {name, target}) : t(`SCA.Caption.${kind}`, {name}));
+  await auto({kind, tokens: [token, ...(attack ? targets : [])], caption, actors: [...new Set([name, ...targets.map(x => x.name)])]},
     message.id);
 }
 
@@ -270,7 +276,8 @@ function heroTokens(combat) {
  */
 async function checkVictory(combat, actor) {
   if ( victories.has(combat.id) || !wanted("victory") ) return;
-  const enemies = combat.combatants.filter(c => c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE);
+  const enemies = combat.combatants.filter(c => c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE
+    && system().isFoe(c.actor));
   if ( !enemies.length || !enemies.every(c => fallen(c.actor, c)) ) return;
   victories.add(combat.id);
   if ( lastBossCombat && (lastBossCombat === combat.id) ) return;
@@ -306,6 +313,32 @@ function onActorChange(actor) {
   if ( !(actor instanceof Actor) ) return;
   checkActor(actor);
   checkLevel(actor);
+  checkDown(actor);
+}
+
+/* -------------------------------------------- */
+/*  Heroes who go down                          */
+/* -------------------------------------------- */
+
+/**
+ * Did a player character just go down (Pathfinder 2e: gain the dying condition)? A hero who dies on the spot gets the
+ * farewell photo instead.
+ * @param {Actor} actor
+ */
+async function checkDown(actor) {
+  if ( !game.user.isActiveGM || !actor || actor.isToken ) return;
+  const sys = system();
+  if ( !sys.isCharacter(actor) ) return;
+  const now = sys.isDown(actor);
+  const before = downState.get(actor.id) ?? false;
+  downState.set(actor.id, now);
+  if ( !now || before || !actor.hasPlayerOwner || !wanted("down") ) return;
+  // Let the condition and the fallen token settle on every client before the photo
+  await new Promise(resolve => setTimeout(resolve, 1200));
+  if ( sys.isDead(actor) || !sys.isDown(actor) ) return;
+  const tokens = tokensOf(playScene(), [actor]);
+  if ( !tokens.length ) return;
+  await auto({kind: "down", tokens, caption: t("SCA.Caption.down", {name: actor.name}), actors: [actor.name]});
 }
 
 /* -------------------------------------------- */
@@ -379,6 +412,7 @@ export function rememberState() {
   for ( const actor of game.actors ) {
     const level = sys.level(actor);
     if ( level !== null ) levels.set(actor.id, level);
+    downState.set(actor.id, sys.isDown(actor));
     deadState.set(stateKey(null, actor), sys.isDead(actor));
   }
   for ( const combat of game.combats ) {
@@ -401,7 +435,14 @@ export function registerTriggers() {
   Hooks.on("createActiveEffect", effect => onActorChange(effect.parent));
   Hooks.on("deleteActiveEffect", effect => onActorChange(effect.parent));
   for ( const kind of ["create", "update", "delete"] ) Hooks.on(`${kind}Item`, item => {
-    if ( item.parent instanceof Actor ) setTimeout(() => checkLevel(item.parent), 50);
+    if ( !(item.parent instanceof Actor) ) return;
+    // Conditions of some systems are items (Pathfinder 2e: dying)
+    const pf2e = game.system.id === "pf2e";
+    setTimeout(() => {
+      if ( pf2e ) checkActor(item.parent);
+      checkLevel(item.parent);
+      if ( pf2e ) checkDown(item.parent);
+    }, 50);
   });
   Hooks.on("canvasReady", () => {
     if ( game.user.isActiveGM ) rememberState();

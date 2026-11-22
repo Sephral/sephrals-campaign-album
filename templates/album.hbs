@@ -23,7 +23,16 @@
   <div class="sca-scroll">
     {{#each sessions}}
     <section class="sca-session" data-page-id="{{id}}">
-      <h2>{{title}}</h2>
+      <div class="sca-session-head">
+        <h2>{{title}}</h2>
+        {{#if canShare}}
+        <div class="sca-share" data-share-page="{{id}}" role="group" aria-label="{{localize "SCA.ShareImage.Group"}}">
+          <button type="button" class="sca-icon" data-action="shareImage" data-kind="copy" data-tooltip="{{localize "SCA.ShareImage.CopyHint"}}" aria-label="{{localize "SCA.ShareImage.Copy"}}"><i class="fa-solid fa-copy" inert></i></button>
+          <button type="button" class="sca-icon" data-action="shareImage" data-kind="save" data-tooltip="{{localize "SCA.ShareImage.SaveHint"}}" aria-label="{{localize "SCA.ShareImage.Save"}}"><i class="fa-solid fa-download" inert></i></button>
+          {{#if canPost}}<button type="button" class="sca-icon" data-action="shareImage" data-kind="post" data-tooltip="{{localize "SCA.ShareImage.PostHint"}}" aria-label="{{localize "SCA.ShareImage.Post"}}"><i class="fa-solid fa-image" inert></i></button>{{/if}}
+        </div>
+        {{/if}}
+      </div>
       {{#if photos.length}}
       <ol class="sca-grid plain">
         {{#each photos}}

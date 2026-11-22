@@ -40,9 +40,11 @@ export const SETTINGS = {
   triggerFumble: {type: Boolean, default: false},
   triggerBoss: {type: Boolean, default: true},
   triggerVictory: {type: Boolean, default: true},
+  triggerDown: {type: Boolean, default: true},
   triggerDeath: {type: Boolean, default: true},
   triggerLevelUp: {type: Boolean, default: true},
   triggerDawn: {type: Boolean, default: true},
+  critChecks: {type: Boolean, default: false},
   critsBy: {type: String, default: "players", choices: {
     players: "SCA.SETTINGS.critsBy.players", all: "SCA.SETTINGS.critsBy.all"}},
   maxAuto: {type: Number, default: 5, range: {min: 0, max: 50, step: 1}},
@@ -55,7 +57,10 @@ export const SETTINGS = {
   chatCards: {type: String, default: "all", choices: {
     all: "SCA.SETTINGS.chatCards.all", gm: "SCA.SETTINGS.chatCards.gm", off: "SCA.SETTINGS.chatCards.off"}},
   sessionGap: {type: Number, default: 8, range: {min: 1, max: 72, step: 1}},
-  combatTotals: {type: Boolean, default: true, onChange: onCombatTotalsChange}
+  combatTotals: {type: Boolean, default: true, onChange: onCombatTotalsChange},
+  shareImageCredit: {type: Boolean, default: true},
+  shareImageFormat: {type: String, default: "webp", scope: "client", choices: {
+    webp: "SCA.SETTINGS.shareImageFormat.webp", png: "SCA.SETTINGS.shareImageFormat.png"}}
 };
 
 /* -------------------------------------------- */

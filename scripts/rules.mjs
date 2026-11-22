@@ -4,7 +4,7 @@
  */
 
 /** The moments the album captures on its own, in the order of the settings. */
-export const TRIGGERS = ["crit", "fumble", "boss", "victory", "death", "levelUp", "dawn"];
+export const TRIGGERS = ["crit", "fumble", "boss", "victory", "down", "death", "levelUp", "dawn"];
 
 /** The kinds of photos: the automatic moments, a photo by the GM and a photo by a player. */
 export const KINDS = [...TRIGGERS, "manual", "player"];
@@ -50,6 +50,44 @@ export function sunrisesBetween(from, to, secondsPerDay, sunriseAt) {
   if ( !(to > from) || !(secondsPerDay > 0) || !Number.isFinite(sunriseAt) ) return 0;
   const count = time => Math.floor((time - sunriseAt) / secondsPerDay);
   return count(to) - count(from);
+}
+
+/**
+ * The level of a party: the average of its members, rounded.
+ * @param {number[]} levels
+ * @returns {number|null}   Null when there are no levels
+ */
+export function partyLevelOf(levels) {
+  const list = (levels ?? []).map(Number).filter(Number.isFinite);
+  if ( !list.length ) return null;
+  return Math.round(list.reduce((sum, level) => sum + level, 0) / list.length);
+}
+
+/**
+ * Is a creature clearly above a party? A boss is two or more levels above the party.
+ * @param {number} level        The creature's level (an elite creature counts with its raised level)
+ * @param {number|null} party   The party level
+ * @param {number} [margin=2]
+ * @returns {boolean}
+ */
+export function isAboveParty(level, party, margin=2) {
+  return Number.isFinite(level) && Number.isFinite(party) && ((level - party) >= margin);
+}
+
+/**
+ * The outcome of a Pathfinder 2e check from the context of its chat message.
+ * @param {{type?: string, outcome?: string|null}} context   flags.pf2e.context
+ * @param {{checks?: boolean}} [options]   checks: skill checks, saves and Perception count too, not only attacks
+ * @returns {{kind: "crit"|"fumble"|null, attack: boolean}}
+ */
+export function pf2eOutcome(context, {checks=true}={}) {
+  const type = String(context?.type ?? "");
+  const attack = /attack-roll$/.test(type);
+  if ( !attack && !(checks && ["skill-check", "saving-throw", "perception-check"].includes(type)) ) {
+    return {kind: null, attack: false};
+  }
+  const kind = {criticalSuccess: "crit", criticalFailure: "fumble"}[context?.outcome] ?? null;
+  return {kind, attack};
 }
 
 /**

@@ -249,11 +249,13 @@ export function photoMeta(photo) {
  * The HTML of a page.
  * @param {object[]} photos
  * @param {object|null} [combat]   The combat totals of its game night (see combatSnapshot)
+ * @param {object} [options]
+ * @param {boolean} [options.always]   Show the totals whatever the setting says (sample windows)
  * @returns {string}
  */
-function renderPage(photos, combat=null) {
+export function renderPage(photos, combat=null, {always=false}={}) {
   return pageHtml(photos, {intro: t("SCA.Session.intro"), meta: photoMeta, empty: t("SCA.Session.empty"),
-    combat: combatSection(combat)});
+    combat: combatSection(combat, always)});
 }
 
 /**
@@ -362,6 +364,14 @@ export function combatTotalsHint() {
   if ( !game.user.isGM || !setting("combatTotals") ) return "";
   const module = game.modules.get(COMBAT_LOG_ID);
   if ( module?.active && (!module.api || (typeof module.api.sessionTotals === "function")) ) return "";
+  return combatHintHtml();
+}
+
+/**
+ * The hint text with its link, as HTML.
+ * @returns {string}
+ */
+export function combatHintHtml() {
   const link = `<a href="${COMBAT_LOG_URL}" target="_blank" rel="noopener">Sephral’s Combat Log &amp; Stats</a>`;
   return t("SCA.Combat.hint", {link});
 }
@@ -399,10 +409,11 @@ function pageSpan(page, photos=photosOf(page)) {
 /**
  * The combat totals section of a page for its stored totals, or none while the setting is off.
  * @param {object|null} combat
+ * @param {boolean} [always]   Ignore the setting (sample windows)
  * @returns {string}
  */
-function combatSection(combat) {
-  if ( !setting("combatTotals") ) return "";
+function combatSection(combat, always=false) {
+  if ( !always && !setting("combatTotals") ) return "";
   const lang = game.i18n.lang;
   const num = value => {
     try {

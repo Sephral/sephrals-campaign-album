@@ -24,6 +24,7 @@
       "fumble": "Patzer",
       "boss": "Ein Boss fällt",
       "victory": "Sieg",
+      "down": "Held am Boden",
       "death": "Abschied",
       "levelUp": "Stufenaufstieg",
       "dawn": "Sonnenaufgang",
@@ -34,9 +35,12 @@
       "crit": "{name} landet einen kritischen Treffer",
       "critTarget": "{name} landet einen kritischen Treffer gegen {target}",
       "fumble": "{name} patzt",
+      "critCheck": "{name} gelingt ein kritischer Erfolg",
+      "fumbleCheck": "{name} scheitert spektakulär",
       "fumbleTarget": "{name} patzt gegen {target}",
       "boss": "{name} fällt",
       "victory": "Sieg!",
+      "down": "{name} geht zu Boden",
       "death": "Lebe wohl, {name}",
       "levelUp": "{name} erreicht Stufe {level}",
       "dawn": "Ein neuer Tag bricht an"
@@ -138,31 +142,39 @@
       },
       "triggerCrit": {
         "name": "Kritische Treffer",
-        "hint": "Ein Foto bei einem kritischen Treffer (D&D 5e: Angriffswürfe, Crucible: kritische Erfolge, andere Systeme: eine natürliche 20)."
+        "hint": "Ein Foto bei einem kritischen Treffer (D&D 5e: Angriffswürfe, Pathfinder 2e: kritische Erfolge bei Schlägen und Zaubern und, wenn unten eingeschaltet, bei Proben und Rettungswürfen, Crucible: kritische Erfolge, andere Systeme: eine natürliche 20)."
       },
       "triggerFumble": {
         "name": "Patzer",
-        "hint": "Ein Foto bei einem Patzer, für die lustigen Erinnerungen."
+        "hint": "Ein Foto bei einem Patzer, für die lustigen Erinnerungen. In Pathfinder 2e zählen Proben und Rettungswürfe nur mit der Einstellung dazu."
       },
       "triggerBoss": {
         "name": "Gefallene Bosse",
-        "hint": "Ein Foto, wenn ein Boss fällt (D&D 5e: Kreaturen mit legendären Aktionen oder Resistenzen, Crucible: Gegner vom Rang Boss)."
+        "hint": "Ein Foto, wenn ein Boss fällt (D&D 5e: Kreaturen mit legendären Aktionen oder Resistenzen, Pathfinder 2e: Kreaturen, die mindestens zwei Stufen über der Gruppe stehen, Crucible: Gegner vom Rang Boss)."
       },
       "triggerVictory": {
         "name": "Siege",
         "hint": "Ein Foto, wenn der letzte Gegner eines Kampfs fällt."
       },
+      "triggerDown": {
+        "name": "Helden am Boden",
+        "hint": "Ein Foto, wenn ein Spielercharakter zu Boden geht und im Sterben liegt (Pathfinder 2e)."
+      },
       "triggerDeath": {
         "name": "Abschiede",
-        "hint": "Ein Foto, wenn ein Spielercharakter stirbt."
+        "hint": "Ein Foto, wenn ein Spielercharakter stirbt (D&D 5e: tot oder drei Todesrettungswürfe misslungen, Pathfinder 2e: Sterbend auf dem Höchstwert)."
       },
       "triggerLevelUp": {
         "name": "Stufenaufstiege",
-        "hint": "Ein Foto, wenn ein Charakter eine neue Stufe erreicht (D&D 5e und Crucible)."
+        "hint": "Ein Foto, wenn ein Charakter eine neue Stufe erreicht (D&D 5e, Pathfinder 2e und Crucible)."
       },
       "triggerDawn": {
         "name": "Sonnenaufgang",
         "hint": "Ein Foto, wenn die Sonne über einem neuen Tag aufgeht (Kalender mit Sonne, etwa die von D&D 5e und Ember). Es zeigt die Helden auf der aktuellen Szene."
+      },
+      "critChecks": {
+        "name": "Auch Proben und Rettungswürfe",
+        "hint": "Pathfinder 2e: auch kritische Erfolge und Patzer bei Fertigkeitsproben, Rettungswürfen und Wahrnehmung fotografieren, nicht nur bei Angriffen und Zaubern. Standardmäßig aus, weil sie oft vorkommen und die automatischen Fotos einer Sitzung aufbrauchen (auch bei Patzern)."
       },
       "critsBy": {
         "name": "Wessen kritische Treffer",
@@ -205,6 +217,16 @@
       "combatTotals": {
         "name": "Kampfbilanz auf den Sitzungsseiten",
         "hint": "Jede Sitzungsseite zeigt auch die Kämpfe dieses Spielabends: Runden, Schaden, Heilung, besiegte Gegner und den Helden des Abends, nur was Spieler sehen dürfen. Braucht Sephral’s Combat Log & Stats."
+      },
+      "shareImageCredit": {
+        "name": "Name auf dem Sitzungsbild",
+        "hint": "Das Bild einer Sitzung, das Spieler kopieren, speichern oder posten, endet mit einer kleinen Zeile mit dem Namen dieses Moduls. Schalte es aus, wenn das Bild ohne diese Zeile erscheinen soll."
+      },
+      "shareImageFormat": {
+        "name": "Dateiformat des Sitzungsbilds",
+        "hint": "Beim Speichern und Posten eines Sitzungsbilds wird dieses Format benutzt. WebP ist kleiner, PNG öffnet sich überall. Beim Kopieren wird immer PNG benutzt.",
+        "webp": "WebP",
+        "png": "PNG"
       }
     },
     "SELFTEST": {
@@ -246,6 +268,64 @@
       "playPause": "Abspielen oder anhalten",
       "stop": "Für alle beenden",
       "gmLeads": "Die Spielleitung führt durch den Rückblick."
+    },
+    "ShareImage": {
+      "Group": "Sitzung als Bild",
+      "Copy": "Als Bild kopieren",
+      "CopyHint": "Diese Sitzung mit ihren Fotos als ein Bild kopieren.",
+      "Save": "Als Bild speichern",
+      "SaveHint": "Diese Sitzung mit ihren Fotos als eine Bilddatei speichern.",
+      "Post": "Als Bild posten",
+      "PostHint": "Diese Sitzung als ein Bild im Chat für alle posten.",
+      "Session": "Sitzung {number}",
+      "More": "+{count} weitere im Album",
+      "Credit": "Erstellt mit Sephral’s Campaign Album",
+      "Copied": "Das Bild liegt in deiner Zwischenablage.",
+      "Saved": "Das Bild wurde als Datei gespeichert.",
+      "CopyFallback": "Zum Kopieren eines Bildes braucht der Browser eine sichere Verbindung (https). Das Bild wurde stattdessen als Datei gespeichert.",
+      "Failed": "Das Bild konnte nicht gezeichnet werden.",
+      "MissingOne": "1 Foto konnte nicht geladen werden und fehlt im Bild.",
+      "MissingOther": "{count} Fotos konnten nicht geladen werden und fehlen im Bild.",
+      "None": "In dieser Sitzung gibt es keine Fotos, die du sehen darfst.",
+      "PostNoUpload": "Du darfst hier keine Dateien hochladen. Kopiere oder speichere das Bild stattdessen.",
+      "PostHidden": "Diese Sitzungsseite können die Spieler nicht lesen. Ändere zuerst ihre Berechtigungen oder kopiere oder speichere das Bild.",
+      "Posted": "Das Bild steht jetzt für alle im Chat.",
+      "PostFailed": "Das Bild konnte nicht hochgeladen werden. Kopiere oder speichere es stattdessen."
+    },
+    "Sample": {
+      "Journal": "Journalseite",
+      "Chat": "Chatkarten",
+      "Questions": "Rückfragen",
+      "Picture": "Bild",
+      "Texts": "Texte",
+      "AlbumGm": "Album: letzte Sitzung (SL)",
+      "AlbumAll": "Album: alle Sitzungen (SL)",
+      "AlbumPlayer": "Album: Ansicht der Spieler",
+      "AlbumViewer": "Album: großes Foto (SL)",
+      "AlbumViewerPlayer": "Album: großes Foto (Spieler)",
+      "AlbumSlideshow": "Album: Diashow",
+      "AlbumHints": "Album: Hinweise (keine SL, neue Sitzung, Rückblick läuft, Kampfzahlen)",
+      "AlbumEmptySession": "Album: Sitzung ohne Fotos",
+      "AlbumEmpty": "Album: noch keine Sitzung",
+      "AlbumNotReady": "Album: noch nicht eingerichtet",
+      "RecapIntro": "Rückblick: erste Folie (SL)",
+      "RecapPhoto": "Rückblick: Foto (SL)",
+      "RecapLast": "Rückblick: letztes Foto mit Bildknöpfen (SL)",
+      "RecapPlayer": "Rückblick: Foto (Ansicht der Spieler)",
+      "RecapOver": "Rückblick: zu Ende",
+      "JournalNight": "Journalseite: Abend mit mehreren Kämpfen",
+      "JournalFirst": "Journalseite: erster Kampf, nur Schaden",
+      "JournalHealing": "Journalseite: nur Heilung",
+      "ChatPhoto": "Chat: neues Foto",
+      "ChatOffer": "Chat: Angebot des Rückblicks (SL)",
+      "ChatApproval": "Chat: Foto eines Spielers wartet auf die SL",
+      "ChatShareImage": "Chat: Bild einer Sitzung",
+      "ChatSelftest": "Chat: Selbsttest mit Problemen",
+      "ShareImage": "Bild einer Sitzung",
+      "QuestionPhoto": "Rückfrage: Foto senden",
+      "QuestionCaption": "Rückfrage: Bildunterschrift ändern",
+      "QuestionRemove": "Rückfrage: Foto entfernen",
+      "Messages": "Meldungen, wenn kein Foto gemacht werden kann"
     }
   }
 }

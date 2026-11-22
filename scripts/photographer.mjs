@@ -155,6 +155,20 @@ export async function submitOwnPhoto(caption="") {
 }
 
 /**
+ * The card the GM gets for a photo a player sent: the image, the caption and the answer buttons.
+ * @param {string} name   The player
+ * @param {{image: string, caption?: string}} data
+ * @returns {string}
+ */
+export function approvalHtml(name, data) {
+  return `<div class="sca-card sca-approval"><p class="sca-card-title">${esc(t("SCA.Card.approval", {name}))}</p>`
+    + `<img src="${esc(data.image)}" alt="">${data.caption ? `<p class="sca-card-caption">${esc(data.caption)}</p>` : ""}`
+    + `<div class="sca-card-buttons"><button type="button" data-sca-answer="yes"><i class="fa-solid fa-check" inert></i> `
+    + `${esc(t("SCA.Card.approve"))}</button><button type="button" data-sca-answer="no"><i class="fa-solid fa-xmark" inert></i> `
+    + `${esc(t("SCA.Card.decline"))}</button></div></div>`;
+}
+
+/**
  * Active GM: a player sent a photo.
  * @param {object} payload
  * @param {User} sender
@@ -178,11 +192,7 @@ async function onSubmit(payload, sender) {
   }
   // Waits for the GM: the image travels in the GM's card until it is answered, so a declined photo leaves no file
   await ChatMessage.implementation.create({
-    content: `<div class="sca-card sca-approval"><p class="sca-card-title">${esc(t("SCA.Card.approval", {name: sender.name}))}</p>`
-      + `<img src="${esc(payload.image)}" alt="">${data.caption ? `<p class="sca-card-caption">${esc(data.caption)}</p>` : ""}`
-      + `<div class="sca-card-buttons"><button type="button" data-sca-answer="yes"><i class="fa-solid fa-check" inert></i> `
-      + `${esc(t("SCA.Card.approve"))}</button><button type="button" data-sca-answer="no"><i class="fa-solid fa-xmark" inert></i> `
-      + `${esc(t("SCA.Card.decline"))}</button></div></div>`,
+    content: approvalHtml(sender.name, data),
     speaker: {alias: t("SCA.Card.speaker")},
     whisper: gmIds(),
     flags: {[MODULE_ID]: {submission: {...data, userId: sender.id}}}

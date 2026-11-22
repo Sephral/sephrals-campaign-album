@@ -24,6 +24,7 @@
       "fumble": "Fumble",
       "boss": "A boss falls",
       "victory": "Victory",
+      "down": "Hero down",
       "death": "Farewell",
       "levelUp": "Level up",
       "dawn": "Sunrise",
@@ -34,9 +35,12 @@
       "crit": "{name} lands a critical hit",
       "critTarget": "{name} lands a critical hit on {target}",
       "fumble": "{name} fumbles",
+      "critCheck": "{name} pulls off a critical success",
+      "fumbleCheck": "{name} fails in spectacular fashion",
       "fumbleTarget": "{name} fumbles against {target}",
       "boss": "{name} falls",
       "victory": "Victory!",
+      "down": "{name} goes down",
       "death": "Farewell, {name}",
       "levelUp": "{name} reaches level {level}",
       "dawn": "A new day dawns"
@@ -138,31 +142,39 @@
       },
       "triggerCrit": {
         "name": "Critical hits",
-        "hint": "A photo of a critical hit (D&D 5e: attack rolls, Crucible: critical successes, other systems: a natural 20)."
+        "hint": "A photo of a critical hit (D&D 5e: attack rolls, Pathfinder 2e: critical successes of strikes, spells and, if switched on below, checks and saves, Crucible: critical successes, other systems: a natural 20)."
       },
       "triggerFumble": {
         "name": "Fumbles",
-        "hint": "A photo of a fumble, the funny memories."
+        "hint": "A photo of a fumble, the funny memories. In Pathfinder 2e, checks and saves only count with the setting for them."
       },
       "triggerBoss": {
         "name": "Fallen bosses",
-        "hint": "A photo when a boss falls (D&D 5e: creatures with legendary actions or resistances, Crucible: adversaries of the boss rank)."
+        "hint": "A photo when a boss falls (D&D 5e: creatures with legendary actions or resistances, Pathfinder 2e: creatures two or more levels above the party, Crucible: adversaries of the boss rank)."
       },
       "triggerVictory": {
         "name": "Victories",
         "hint": "A photo when the last enemy of a fight falls."
       },
+      "triggerDown": {
+        "name": "Heroes going down",
+        "hint": "A photo when a player character goes down and starts dying (Pathfinder 2e)."
+      },
       "triggerDeath": {
         "name": "Farewells",
-        "hint": "A photo when a player character dies."
+        "hint": "A photo when a player character dies (D&D 5e: dead or three failed death saves, Pathfinder 2e: dying at its maximum)."
       },
       "triggerLevelUp": {
         "name": "Level ups",
-        "hint": "A photo when a character reaches a new level (D&D 5e and Crucible)."
+        "hint": "A photo when a character reaches a new level (D&D 5e, Pathfinder 2e and Crucible)."
       },
       "triggerDawn": {
         "name": "Sunrise",
         "hint": "A photo when the sun rises on a new day (calendars with a sun, such as the ones of D&D 5e and Ember). It shows the heroes on the current scene."
+      },
+      "critChecks": {
+        "name": "Checks and saves too",
+        "hint": "Pathfinder 2e: also photograph critical successes and failures of skill checks, saves and Perception, not only of attacks and spells. Off by default, because these are common and use up the automatic photos of a session (also for fumbles)."
       },
       "critsBy": {
         "name": "Whose critical hits",
@@ -205,6 +217,16 @@
       "combatTotals": {
         "name": "Combat totals on session pages",
         "hint": "Each session page also shows the fights of that game night: rounds, damage, healing, defeated foes and the hero of the night, only what players may see. Needs Sephral’s Combat Log & Stats."
+      },
+      "shareImageCredit": {
+        "name": "Name on the session picture",
+        "hint": "The picture of a session that players copy, save or post ends with a small line with the name of this module. Switch it off for a picture without it."
+      },
+      "shareImageFormat": {
+        "name": "File format of the session picture",
+        "hint": "Saving and posting a session picture uses this format. WebP is smaller, PNG opens everywhere. Copying always uses PNG.",
+        "webp": "WebP",
+        "png": "PNG"
       }
     },
     "SELFTEST": {
@@ -246,6 +268,64 @@
       "playPause": "Play or pause",
       "stop": "End for everyone",
       "gmLeads": "The GM leads the recap."
+    },
+    "ShareImage": {
+      "Group": "Session as a picture",
+      "Copy": "Copy as image",
+      "CopyHint": "Copy this session as one picture with its photos.",
+      "Save": "Save as image",
+      "SaveHint": "Save this session as one picture file with its photos.",
+      "Post": "Post as image",
+      "PostHint": "Post this session as one picture in the chat for everyone.",
+      "Session": "Session {number}",
+      "More": "+{count} more in the album",
+      "Credit": "Made with Sephral’s Campaign Album",
+      "Copied": "The picture is on your clipboard.",
+      "Saved": "The picture was saved as a file.",
+      "CopyFallback": "Copying a picture needs a secure connection (https). The picture was saved as a file instead.",
+      "Failed": "The picture could not be drawn.",
+      "MissingOne": "1 photo could not be loaded and shows a gap in the picture.",
+      "MissingOther": "{count} photos could not be loaded and show a gap in the picture.",
+      "None": "There are no photos in this session that you may see.",
+      "PostNoUpload": "You are not allowed to upload files here. Copy or save the picture instead.",
+      "PostHidden": "This session page is not readable for the players. Change its permissions first, or copy or save the picture.",
+      "Posted": "The picture is now in the chat for everyone.",
+      "PostFailed": "The picture could not be uploaded. Copy or save it instead."
+    },
+    "Sample": {
+      "Journal": "Journal page",
+      "Chat": "Chat cards",
+      "Questions": "Questions",
+      "Picture": "Picture",
+      "Texts": "Texts",
+      "AlbumGm": "Album: latest session (GM)",
+      "AlbumAll": "Album: all sessions (GM)",
+      "AlbumPlayer": "Album: player view",
+      "AlbumViewer": "Album: large photo (GM)",
+      "AlbumViewerPlayer": "Album: large photo (player)",
+      "AlbumSlideshow": "Album: slideshow",
+      "AlbumHints": "Album: hints (no GM, new session, recap running, combat totals)",
+      "AlbumEmptySession": "Album: session without photos",
+      "AlbumEmpty": "Album: no sessions yet",
+      "AlbumNotReady": "Album: not set up yet",
+      "RecapIntro": "Recap: intro slide (GM)",
+      "RecapPhoto": "Recap: photo (GM)",
+      "RecapLast": "Recap: last photo with share buttons (GM)",
+      "RecapPlayer": "Recap: photo (player view)",
+      "RecapOver": "Recap: over",
+      "JournalNight": "Journal page: night with several fights",
+      "JournalFirst": "Journal page: first fight, damage only",
+      "JournalHealing": "Journal page: healing only",
+      "ChatPhoto": "Chat: new photo",
+      "ChatOffer": "Chat: offer of the recap (GM)",
+      "ChatApproval": "Chat: player photo waits for the GM",
+      "ChatShareImage": "Chat: picture of a session",
+      "ChatSelftest": "Chat: self test report with problems",
+      "ShareImage": "Picture of a session",
+      "QuestionPhoto": "Question: send a photo",
+      "QuestionCaption": "Question: change a caption",
+      "QuestionRemove": "Question: remove a photo",
+      "Messages": "Messages when a photo cannot be taken"
     }
   }
 }

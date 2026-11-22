@@ -11,6 +11,7 @@ const {ApplicationV2, HandlebarsApplicationMixin} = foundry.applications.api;
 import {MODULE_ID, TEMPLATES, esc, flag, setting, t} from "./config.mjs";
 import {albumJournal, photoMeta, photosOf, sessionState} from "./album.mjs";
 import {RECAP_INTRO, recapRunning, recapSlides, recapStep} from "./rules.mjs";
+import {runShareImage, shareButtons} from "./share-image-actions.mjs";
 import {countFeature} from "./usage.mjs";
 
 /** Seconds of the intro slide and of each photo while the recap plays. */
@@ -59,13 +60,27 @@ function photosForMe(page) {
  * @param {number} count
  * @returns {string}
  */
-function photoCount(count) {
+export function photoCount(count) {
   return (count === 1) ? t("SCA.Recap.photosOne") : t("SCA.Recap.photosOther", {count});
 }
 
 /* -------------------------------------------- */
 /*  Offer and start                             */
 /* -------------------------------------------- */
+
+/**
+ * The card that offers the recap of a session: text and the button that starts it.
+ * @param {JournalEntryPage} page   The session that ended
+ * @param {number} count            Its photos
+ * @returns {string}
+ */
+export function offerHtml(page, count) {
+  const text = t("SCA.Recap.offer", {count: photoCount(count), session: page.name});
+  return `<div class="sca-card sca-recap-offer"><p class="sca-card-title"><i class="fa-solid fa-clapperboard" inert></i> `
+    + `${esc(t("SCA.Recap.title"))}</p><p>${esc(text)}</p>`
+    + `<button type="button" data-sca-recap="${esc(page.id)}"><i class="fa-solid fa-play" inert></i> `
+    + `${esc(t("SCA.Recap.show"))}</button></div>`;
+}
 
 /**
  * Offer the recap of a session to the GMs: a whispered card with a button and a short notice. Once per session.
@@ -77,12 +92,8 @@ export async function offerRecap(page) {
   if ( !count || !visibleToAll(page) || (sessionState().recapFor === page.id) ) return false;
   await game.settings.set(MODULE_ID, "session", {...sessionState(), recapFor: page.id});
   const gms = game.users.filter(u => u.isGM).map(u => u.id);
-  const text = t("SCA.Recap.offer", {count: photoCount(count), session: page.name});
   await ChatMessage.implementation.create({
-    content: `<div class="sca-card sca-recap-offer"><p class="sca-card-title"><i class="fa-solid fa-clapperboard" inert></i> `
-      + `${esc(t("SCA.Recap.title"))}</p><p>${esc(text)}</p>`
-      + `<button type="button" data-sca-recap="${esc(page.id)}"><i class="fa-solid fa-play" inert></i> `
-      + `${esc(t("SCA.Recap.show"))}</button></div>`,
+    content: offerHtml(page, count),
     speaker: {alias: t("SCA.Card.speaker")},
     whisper: gms,
     flags: {[MODULE_ID]: {recapOffer: page.id}}
@@ -179,7 +190,8 @@ export class RecapViewer extends HandlebarsApplicationMixin(ApplicationV2) {
       prev: RecapViewer.#onPrev,
       next: RecapViewer.#onNext,
       play: RecapViewer.#onPlay,
-      stop: RecapViewer.#onStop
+      stop: RecapViewer.#onStop,
+      shareImage: RecapViewer.#onShareImage
     }
   };
 
@@ -200,27 +212,46 @@ export class RecapViewer extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
+   * The state of the recap this window shows: the running one. Sample windows keep their own in memory.
+   * @returns {object|null}
+   */
+  _state() {
+    return liveRecap();
+  }
+
+  /**
+   * The session page of a recap state.
+   * @param {object} state
+   * @returns {JournalEntryPage|undefined}
+   */
+  _page(state) {
+    return albumJournal()?.pages.get(state.pageId);
+  }
+
+  /**
    * The slides this client shows.
    * @param {object} state
    * @returns {string[]}
    */
   #slides(state) {
-    return recapSlides(photosForMe(albumJournal()?.pages.get(state.pageId)));
+    return recapSlides(photosForMe(this._page(state)));
   }
 
   /** @override */
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    const state = liveRecap();
+    const state = this._state();
     context.isGM = game.user.isGM;
     if ( !state ) return context;
-    const page = albumJournal()?.pages.get(state.pageId);
+    const page = this._page(state);
     const photos = photosForMe(page);
     const slides = recapSlides(photos);
     const index = Math.max(0, slides.indexOf(state.slide));
     context.playing = !!state.playing;
     context.hasPrev = index > 0;
     context.hasNext = index < (slides.length - 1);
+    // At the end of the recap everyone can take the session home as one picture
+    if ( !context.hasNext && photos.length ) Object.assign(context, shareButtons(page), {sharePageId: page.id});
     if ( (index === 0) || !photos.length ) {
       const started = Number(flag(page ?? {}, "session.started")) || photos[0]?.time || Date.now();
       context.intro = {
@@ -241,9 +272,9 @@ export class RecapViewer extends HandlebarsApplicationMixin(ApplicationV2) {
   async _onRender(context, options) {
     await super._onRender(context, options);
     clearTimeout(this.#timer);
-    const state = liveRecap();
-    // Only the active GM's client moves the recap on by itself
-    if ( !state || !state.playing || !game.user.isActiveGM ) return;
+    const state = this._state();
+    // Only the active GM's client moves the recap on by itself (a sample window stays where it is)
+    if ( !state || !state.playing || !game.user.isActiveGM || this.isSample ) return;
     const slides = this.#slides(state);
     const seconds = (state.slide === RECAP_INTRO) ? INTRO_SECONDS : SLIDE_SECONDS;
     this.#timer = setTimeout(() => {
@@ -258,6 +289,7 @@ export class RecapViewer extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @override */
   async _onClose(options) {
     clearTimeout(this.#timer);
+    if ( this.isSample ) return super._onClose(options);
     const state = setting("recap");
     if ( !this.#remote && state?.active ) {
       // A player closes it for themselves, the GM ends it for everyone
@@ -306,6 +338,17 @@ export class RecapViewer extends HandlebarsApplicationMixin(ApplicationV2) {
     const state = liveRecap();
     if ( !game.user.isGM || !state ) return;
     await game.settings.set(MODULE_ID, "recap", {...state, playing: !state.playing});
+  }
+
+  /** @this {RecapViewer} */
+  static async #onShareImage(event, target) {
+    const buttons = target.closest("[data-share-page]")?.querySelectorAll("button") ?? [target];
+    for ( const button of buttons ) button.disabled = true;
+    try {
+      await runShareImage(target.dataset.kind, target.closest("[data-share-page]")?.dataset.sharePage);
+    } finally {
+      for ( const button of buttons ) button.disabled = false;
+    }
   }
 
   /** @this {RecapViewer} */

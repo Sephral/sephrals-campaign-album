@@ -61,7 +61,10 @@ test("every key used by scripts and templates exists", async () => {
   }
   // Keys built from parts
   for ( const kind of KINDS ) used.add(`SCA.Kind.${kind}`);
-  for ( const kind of ["crit", "fumble"] ) used.add(`SCA.Caption.${kind}Target`);
+  for ( const kind of ["crit", "fumble"] ) {
+    used.add(`SCA.Caption.${kind}Target`);
+    used.add(`SCA.Caption.${kind}Check`);
+  }
   for ( const reason of ["off", "limit", "cooldown"] ) used.add(`SCA.Skip.${reason}`);
   for ( const key of used ) if ( key.endsWith(".") ) used.delete(key);
   const missing = [...used].filter(key => !enKeys.has(key) && ![...enKeys].some(k => k.startsWith(`${key}.`)));

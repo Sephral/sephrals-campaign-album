@@ -423,3 +423,35 @@
 .sca-recap-offer button {
   margin-top: 4px;
 }
+
+/* Session as a picture */
+.sca-album .sca-session-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 12px 0 8px;
+  border-bottom: 1px solid var(--color-border, rgb(255 255 255 / 0.15));
+}
+
+.sca-album .sca-session-head h2 {
+  flex: 1;
+  margin: 0;
+  border: 0;
+}
+
+.sca-share {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.sca-share button.sca-icon {
+  width: 28px;
+  margin: 0;
+  padding: 0;
+  line-height: 26px;
+}
+
+.sca-recap .sca-share button {
+  color: inherit;
+}
